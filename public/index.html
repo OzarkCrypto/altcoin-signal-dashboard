@@ -53,6 +53,12 @@ a{color:#111}
 }
 .badge-off{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
 .badge-def{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.signal-buy{background:#f0fdf4;color:#16a34a;font-weight:700;font-size:0.7rem;padding:2px 8px;border-radius:2px;border:1px solid #bbf7d0}
+.signal-wait{background:#f8f8f8;color:#bbb;font-size:0.7rem;padding:2px 8px;border-radius:2px;border:1px solid #eee}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:2px}
+.dot.on{background:#16a34a}.dot.off{background:#e0e0e0}
+.live-meta{font-size:0.75rem;color:#999;margin-bottom:16px}
+.disclaimer{font-size:0.7rem;color:#bbb;border:1px solid #eee;border-radius:4px;padding:10px 14px;margin-top:16px;line-height:1.5}
 
 .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:#e0e0e0;border:1px solid #e0e0e0;border-radius:4px;overflow:hidden;margin-bottom:4px}
 .metric{background:#fff;padding:12px 14px}
@@ -117,6 +123,25 @@ tr:hover{background:#fafafa}
   .metrics{grid-template-columns:repeat(2,1fr)}
   .compare{grid-template-columns:1fr}
 }
+
+/* Live signals */
+.signal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.signal-header .updated{font-size:0.65rem;color:#bbb}
+.signal-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#e0e0e0;border:1px solid #e0e0e0;border-radius:4px;overflow:hidden;margin-bottom:16px}
+.signal-summary .metric{background:#fff;padding:12px 14px}
+.signal-card{border:1px solid #e0e0e0;border-radius:4px;padding:12px 16px;margin-bottom:6px;display:grid;grid-template-columns:140px 90px 1fr 180px;gap:8px;align-items:center}
+.signal-card:hover{background:#fafafa}
+.signal-card .coin-name{font-weight:700;font-size:0.85rem}
+.signal-card .coin-price{font-size:0.75rem;color:#888;font-variant-numeric:tabular-nums}
+.signal-card .coin-returns{display:flex;gap:12px;font-size:0.75rem;font-variant-numeric:tabular-nums}
+.signal-card .coin-returns span{display:flex;flex-direction:column}
+.signal-card .coin-returns .label{font-size:0.6rem;color:#bbb;text-transform:uppercase}
+.signal-card .flags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.flag{font-size:0.55rem;padding:2px 6px;border-radius:2px;font-weight:600;letter-spacing:0.03em}
+.flag-on{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.flag-off{background:#f8f8f8;color:#ccc;border:1px solid #eee}
+.no-signals{padding:24px;text-align:center;color:#999;font-size:0.85rem;border:1px dashed #e0e0e0;border-radius:4px;margin:8px 0}
+@media(max-width:768px){.signal-card{grid-template-columns:1fr;gap:4px}.signal-summary{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -135,12 +160,12 @@ tr:hover{background:#fafafa}
   <span id="footer-time"></span>
 </div>
 <script>
-var DATA=null,mode='compare',activeOff='off_wide_trail',activeDef='def_tight',activePeriod='full_2025',coinView='top',lang='en';
+var DATA=null,LIVE=null,mode='live',activeOff='off_wide_trail',activeDef='def_tight',activePeriod='full_2025',coinView='top',lang='en';
 
 var T = {
   en: {
     subtitle: 'Screening tool for altcoins listed on Binance Futures',
-    compare: 'Compare', offensive: 'Momentum', defensive: 'Protective', howItWorks: 'How It Works',
+    compare: 'Compare', offensive: 'Momentum', defensive: 'Protective', howItWorks: 'How It Works', liveSignals: 'Live Signals',
     headToHead: 'Side by Side \u2014 Momentum vs Protective',
     period: 'Period', type: 'Type', signalMed: 'Signal Result', bnhMed: 'If You Just Held', btcCol: 'Bitcoin', alpha: 'Edge', beatBnh: 'Beat Holding', winRate: 'Win %', trades: 'Trades',
     stratProfile: 'Strategy Profile',
@@ -156,6 +181,32 @@ var T = {
     offLabel: 'MOMENTUM', defLabel: 'PROTECTIVE',
     logic: 'How it enters',
     stopTrail: 'Exit rules',
+
+    liveSignals: 'Live Signals',
+    liveSubtitle: 'Current signal states based on latest market data',
+    offActive: 'Momentum Active',
+    defActive: 'Protective Active',
+    noSignals: 'No coins',
+    btcPrice: 'Bitcoin Price',
+    updated: 'Updated',
+    coinCol: 'Coin',
+    priceCol: 'Price',
+    d7: '7d',
+    d30: '30d',
+    vsBtc: 'vs BTC 7d',
+    offSignalsTitle: 'Momentum Strategy Signals',
+    defSignalsTitle: 'Protective Strategy Signals',
+    offSignalsDesc: 'These coins are currently showing at least 2 of 4 momentum conditions (price breakout, outpacing Bitcoin, volume surge, leveraged traders confirming).',
+    defSignalsDesc: 'These coins are currently showing at least 2 of 3 protective conditions (trending above Bitcoin, more buying than selling volume, short sellers under pressure).',
+    flagBreakout: 'New High',
+    flagRsAccel: 'Beating BTC',
+    flagVolSurge: 'Vol Surge',
+    flagFundConfirm: 'Longs Paying',
+    flagRsTrend: 'BTC Trend',
+    flagVolStruct: 'Buy Volume',
+    flagNegFund: 'Shorts Paying',
+    noOffSignals: 'No coins are triggering the momentum strategy right now. This means no coin is simultaneously breaking out to new highs while outpacing Bitcoin with strong volume.',
+    noDefSignals: 'No coins are triggering the protective strategy right now. This means no coin is showing all the hallmarks of quiet accumulation.',
     footerSrc: 'Data: Binance Futures \u00b7 100 coins \u00b7 Jan 2025 \u2013 Mar 2026',
     assessment: 'Assessment',
     offBtnBreakout20: 'Standard', offBtnBreakout14: 'Fast', offBtnAggressive: 'Aggressive', offBtnWideTrail: 'Wide Trail',
@@ -208,11 +259,35 @@ var T = {
     howCaveat1: 'This is a <strong>backtest</strong> \u2014 it shows what would have happened in the past, not what will happen in the future.',
     howCaveat2: 'Trading fees (roughly 0.08% per round trip) are not included. With many trades, fees add up.',
     howCaveat3: 'The test period (2025\u20132026 Q1) was mostly a bad period for altcoins. The strategies might look different in a strong altcoin rally.',
+    
+    liveUpdated: 'Last computed',
+    liveScanCount: 'coins scanned',
+    liveOffTitle: 'Momentum Strategy — BUY signals right now',
+    liveDefTitle: 'Protective Strategy — BUY signals right now',
+    liveAllTitle: 'All Coins — Sorted by strength vs Bitcoin (30 days)',
+    liveScore: 'Score',
+    livePrice: 'Price',
+    live1d: '1D',
+    live7d: '7D',
+    live30d: '30D',
+    liveRsBtc: 'vs BTC',
+    liveFunding: 'Funding',
+    liveBreakout: 'Breakout',
+    liveRsAccel: 'RS Accel',
+    liveVolSurge: 'Vol Surge',
+    liveFundConf: 'Fund+',
+    liveRsTrend: 'RS Trend',
+    liveVolStruct: 'Vol Struct',
+    liveFundNeg: 'Fund-',
+    liveStatus: 'Status',
+    liveBuy: 'BUY',
+    liveWait: 'WAIT',
+    liveDisclaimer: 'This is not financial advice. These signals are computed from historical patterns and may not predict future performance. Always do your own research.',
     howCaveat4: 'We tested multiple parameter settings and showed the best ones. This "overfitting" means real performance may be worse.',
   },
   kr: {
     subtitle: '\uBC14\uC774\uB09C\uC2A4 \uC120\uBB3C \uC0C1\uC7A5 \uC54C\uD2B8\uCF54\uC778 \uC2A4\uD06C\uB9AC\uB2DD \uB3C4\uAD6C',
-    compare: '\uBE44\uAD50', offensive: '\uACF5\uACA9\uD615', defensive: '\uBC29\uC5B4\uD615', howItWorks: '\uC791\uB3D9 \uC6D0\uB9AC',
+    compare: '\uBE44\uAD50', offensive: '\uACF5\uACA9\uD615', defensive: '\uBC29\uC5B4\uD615', howItWorks: '\uC791\uB3D9 \uC6D0\uB9AC', liveSignals: '\uD604\uC7AC \uC2DC\uADF8\uB110',
     headToHead: '\uACF5\uACA9\uD615 vs \uBC29\uC5B4\uD615 \uBE44\uAD50',
     period: '\uAE30\uAC04', type: '\uC720\uD615', signalMed: '\uC2DC\uADF8\uB110 \uACB0\uACFC', bnhMed: '\uADF8\uB0E5 \uB4E4\uACE0 \uC788\uC5C8\uC744 \uB54C', btcCol: '\uBE44\uD2B8\uCF54\uC778', alpha: '\uCC28\uC774', beatBnh: '\uBCF4\uC720 \uB300\uBE44 \uC2B9', winRate: '\uC2B9\uB960', trades: '\uAC70\uB798\uC218',
     stratProfile: '\uC804\uB7B5 \uD504\uB85C\uD544',
@@ -279,6 +354,30 @@ var T = {
     howCaveat1: '\uC774\uAC83\uC740 <strong>\uACFC\uAC70 \uD14C\uC2A4\uD2B8</strong>\uC785\uB2C8\uB2E4. \uACFC\uAC70\uC5D0 \uC5B4\uB5A0\uC744\uC9C0\uB97C \uBCF4\uC5EC\uC904 \uBFD0, \uBBF8\uB798\uB97C \uBCF4\uC7A5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.',
     howCaveat2: '\uAC70\uB798 \uC218\uC218\uB8CC(\uC655\uBCF5 \uC57D 0.08%)\uAC00 \uBC18\uC601\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uAC70\uB798\uAC00 \uB9CE\uC73C\uBA74 \uC218\uC218\uB8CC\uAC00 \uC30D\uC785\uB2C8\uB2E4.',
     howCaveat3: '\uD14C\uC2A4\uD2B8 \uAE30\uAC04(2025\uB144~2026\uB144 1\uBD84\uAE30)\uC740 \uB300\uBD80\uBD84 \uC54C\uD2B8\uCF54\uC778\uC5D0 \uC548 \uC88B\uC740 \uC2DC\uAE30\uC600\uC2B5\uB2C8\uB2E4. \uC54C\uD2B8\uCF54\uC778 \uC0C1\uC2B9\uC7A5\uC5D0\uC11C\uB294 \uACB0\uACFC\uAC00 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
+
+    liveUpdated: '\uB9C8\uC9C0\uB9C9 \uACC4\uC0B0',
+    liveScanCount: '\uAC1C \uCF54\uC778 \uC2A4\uCE94',
+    liveOffTitle: '\uACF5\uACA9\uD615 \u2014 \uD604\uC7AC \uB9E4\uC218 \uC2DC\uADF8\uB110',
+    liveDefTitle: '\uBC29\uC5B4\uD615 \u2014 \uD604\uC7AC \uB9E4\uC218 \uC2DC\uADF8\uB110',
+    liveAllTitle: '\uC804\uCCB4 \uCF54\uC778 \u2014 \uBE44\uD2B8\uCF54\uC778 \uB300\uBE44 \uAC15\uB3C4 \uC21C (30\uC77C)',
+    liveScore: '\uC810\uC218',
+    livePrice: '\uAC00\uACA9',
+    live1d: '1\uC77C',
+    live7d: '7\uC77C',
+    live30d: '30\uC77C',
+    liveRsBtc: 'BTC\uB300\uBE44',
+    liveFunding: '\uD380\uB529',
+    liveBreakout: '\uB3CC\uD30C',
+    liveRsAccel: 'RS\uAC00\uC18D',
+    liveVolSurge: '\uAC70\uB798\uB7C9',
+    liveFundConf: '\uD380\uB529+',
+    liveRsTrend: 'RS\uCD94\uC138',
+    liveVolStruct: '\uAC70\uB798\uAD6C\uC870',
+    liveFundNeg: '\uD380\uB529-',
+    liveStatus: '\uC0C1\uD0DC',
+    liveBuy: '\uB9E4\uC218',
+    liveWait: '\uB300\uAE30',
+    liveDisclaimer: '\uC774\uAC83\uC740 \uD22C\uC790 \uC870\uC5B8\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uC774 \uC2DC\uADF8\uB110\uC740 \uACFC\uAC70 \uD328\uD134\uC73C\uB85C \uACC4\uC0B0\uB41C \uAC83\uC774\uBA70 \uBBF8\uB798 \uC131\uACFC\uB97C \uBCF4\uC7A5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uBC18\uB4DC\uC2DC \uBCF8\uC778\uC758 \uD310\uB2E8\uC73C\uB85C \uD22C\uC790\uD558\uC138\uC694.',
     howCaveat4: '\uC5EC\uB7EC \uC124\uC815\uAC12\uC744 \uD14C\uC2A4\uD2B8\uD558\uACE0 \uAC00\uC7A5 \uC88B\uC740 \uACB0\uACFC\uB97C \uBCF4\uC5EC\uC8FC\uACE0 \uC788\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uC131\uACFC\uB294 \uC774\uBCF4\uB2E4 \uB098\uC058 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
   }
 };
@@ -301,12 +400,12 @@ function renderLang(){
 
 function renderModeBar(){
   var el=document.getElementById('mode-bar');
-  el.innerHTML='<button class="mode-btn '+(mode==='compare'?'active-off':'')+'" data-mode="compare">'+t('compare')+'</button>'+'<button class="mode-btn '+(mode==='offensive'?'active-off':'')+'" data-mode="offensive">'+t('offensive')+'</button>'+'<button class="mode-btn '+(mode==='defensive'?'active-def':'')+'" data-mode="defensive">'+t('defensive')+'</button>'+'<button class="mode-btn '+(mode==='how'?'active-how':'')+'" data-mode="how">'+t('howItWorks')+'</button>';
+  el.innerHTML='<button class="mode-btn '+(mode==='compare'?'active-off':'')+'" data-mode="compare">'+t('compare')+'</button>'+'<button class="mode-btn '+(mode==='offensive'?'active-off':'')+'" data-mode="offensive">'+t('offensive')+'</button>'+'<button class="mode-btn '+(mode==='defensive'?'active-def':'')+'" data-mode="defensive">'+t('defensive')+'</button>'+'<button class="mode-btn '+(mode==='how'?'active-how':'')+'" data-mode="how">'+t('howItWorks')+'</button>'+'<button class="mode-btn '+(mode==='live'?'active-off':'')+'" data-mode="live">'+t('liveSignals')+'</button>';
 }
 
 function renderConfigBar(){
   var el=document.getElementById('config-bar');
-  if(mode==='compare'||mode==='how'){el.innerHTML='';return}
+  if(mode==='compare'||mode==='how'||mode==='live'){el.innerHTML='';return}
   var keys=mode==='offensive'?OFF_LABELS_KEY:DEF_LABELS_KEY;
   var active=mode==='offensive'?activeOff:activeDef;
   var h='';
@@ -391,6 +490,75 @@ function renderSingle(st){
   return h;
 }
 
+
+function renderLive(){
+  if(!LIVE)return '<div class="loading">Loading live signals...</div>';
+  var d=LIVE,h='';
+  h+='<div class="live-meta">'+t('liveUpdated')+': '+d.updated_at+' \u00b7 BTC $'+d.btc_price.toLocaleString()+' \u00b7 '+d.universe_size+' '+t('liveScanCount')+'</div>';
+  
+  // Offensive BUY signals
+  var offBuys=d.coins.filter(function(c){return c.off_signal==='BUY'});
+  h+='<div class="section-title"><span class="strat-badge badge-off">'+t('offLabel')+'</span> '+t('liveOffTitle')+' ('+offBuys.length+')</div>';
+  if(offBuys.length===0){
+    h+='<p style="color:#999;font-size:0.82rem;padding:8px 0">No signals currently active.</p>';
+  } else {
+    h+='<table><thead><tr><th style="text-align:left">'+t('symbol')+'</th><th>'+t('liveScore')+'</th><th>'+t('liveBreakout')+'</th><th>'+t('liveRsAccel')+'</th><th>'+t('liveVolSurge')+'</th><th>'+t('liveFundConf')+'</th><th>'+t('live7d')+'</th><th>'+t('liveRsBtc')+'</th><th>'+t('liveFunding')+'</th></tr></thead><tbody>';
+    for(var i=0;i<offBuys.length;i++){
+      var s=offBuys[i];
+      h+='<tr><td style="text-align:left;font-weight:700">'+s.symbol.replace('USDT','')+'</td>';
+      h+='<td><strong>'+s.off_total+'/4</strong></td>';
+      h+='<td><span class="dot '+(s.off_breakout?'on':'off')+'"></span></td>';
+      h+='<td><span class="dot '+(s.off_rs_accel?'on':'off')+'"></span></td>';
+      h+='<td><span class="dot '+(s.off_vol_surge?'on':'off')+'"></span></td>';
+      h+='<td><span class="dot '+(s.off_funding?'on':'off')+'"></span></td>';
+      h+='<td class="'+pctC(s.ret_7d)+'">'+pct(s.ret_7d)+'</td>';
+      h+='<td class="'+pctC(s.rs_7d)+'">'+pct(s.rs_7d)+'</td>';
+      h+='<td>'+(s.funding_5d*100).toFixed(4)+'%</td></tr>';
+    }
+    h+='</tbody></table>';
+  }
+
+  // Defensive BUY signals
+  var defBuys=d.coins.filter(function(c){return c.def_signal==='BUY'});
+  h+='<div class="section-title" style="margin-top:20px"><span class="strat-badge badge-def">'+t('defLabel')+'</span> '+t('liveDefTitle')+' ('+defBuys.length+')</div>';
+  if(defBuys.length===0){
+    h+='<p style="color:#999;font-size:0.82rem;padding:8px 0">No signals currently active.</p>';
+  } else {
+    h+='<table><thead><tr><th style="text-align:left">'+t('symbol')+'</th><th>'+t('liveScore')+'</th><th>'+t('liveRsTrend')+'</th><th>'+t('liveVolStruct')+'</th><th>'+t('liveFundNeg')+'</th><th>'+t('live7d')+'</th><th>'+t('liveRsBtc')+'</th><th>'+t('liveFunding')+'</th></tr></thead><tbody>';
+    for(var i=0;i<defBuys.length;i++){
+      var s=defBuys[i];
+      h+='<tr><td style="text-align:left;font-weight:700">'+s.symbol.replace('USDT','')+'</td>';
+      h+='<td><strong>'+s.def_total+'/3</strong></td>';
+      h+='<td><span class="dot '+(s.def_rs?'on':'off')+'"></span></td>';
+      h+='<td><span class="dot '+(s.def_vol?'on':'off')+'"></span></td>';
+      h+='<td><span class="dot '+(s.def_funding?'on':'off')+'"></span></td>';
+      h+='<td class="'+pctC(s.ret_7d)+'">'+pct(s.ret_7d)+'</td>';
+      h+='<td class="'+pctC(s.rs_7d)+'">'+pct(s.rs_7d)+'</td>';
+      h+='<td>'+(s.funding_5d*100).toFixed(4)+'%</td></tr>';
+    }
+    h+='</tbody></table>';
+  }
+  
+  // All coins
+  h+='<div class="section-title" style="margin-top:20px">'+t('liveAllTitle')+'</div>';
+  h+='<table><thead><tr><th style="text-align:left">'+t('symbol')+'</th><th>'+t('livePrice')+'</th><th>'+t('live1d')+'</th><th>'+t('live7d')+'</th><th>'+t('live30d')+'</th><th>'+t('liveRsBtc')+'</th><th>'+t('offensive')+'</th><th>'+t('defensive')+'</th></tr></thead><tbody>';
+  for(var i=0;i<d.coins.length;i++){
+    var s=d.coins[i];
+    h+='<tr><td style="text-align:left;font-weight:600">'+s.symbol.replace('USDT','')+'</td>';
+    h+='<td>$'+s.price+'</td>';
+    h+='<td class="'+pctC(s.ret_1d)+'">'+pct(s.ret_1d)+'</td>';
+    h+='<td class="'+pctC(s.ret_7d)+'">'+pct(s.ret_7d)+'</td>';
+    h+='<td class="'+pctC(s.ret_30d)+'">'+pct(s.ret_30d)+'</td>';
+    h+='<td class="'+pctC(s.rs_7d)+'">'+pct(s.rs_7d)+'</td>';
+    h+='<td><span class="signal-'+(s.off_signal==='BUY'?'buy':'wait')+'">'+t('live'+(s.off_signal==='BUY'?'Buy':'Wait'))+'</span></td>';
+    h+='<td><span class="signal-'+(s.def_signal==='BUY'?'buy':'wait')+'">'+t('live'+(s.def_signal==='BUY'?'Buy':'Wait'))+'</span></td>';
+    h+='</tr>';
+  }
+  h+='</tbody></table>';
+  h+='<div class="disclaimer">'+t('liveDisclaimer')+'</div>';
+  return h;
+}
+
 function renderHow(){
   var h='<div class="how-section">';
   h+='<h2>'+t('howTitle')+'</h2><p>'+t('howIntro')+'</p>';
@@ -421,9 +589,13 @@ function renderHow(){
   return h;
 }
 
+
+
+
 function render(){
   renderLang();renderModeBar();renderConfigBar();
   if(mode==='how'){document.getElementById('dashboard').innerHTML=renderHow();return}
+  if(mode==='live'){document.getElementById('dashboard').innerHTML=renderLive();return}
   if(!DATA){document.getElementById('dashboard').innerHTML='<div class="loading">Loading...</div>';return}
   if(mode==='compare') document.getElementById('dashboard').innerHTML=renderCompare();
   else document.getElementById('dashboard').innerHTML=renderSingle(mode);
@@ -447,6 +619,7 @@ document.addEventListener('click',function(e){
 async function init(){
   try{
     var r=await fetch('/dual_results.json');DATA=await r.json();
+    try{var lr=await fetch('/live_signals.json');LIVE=await lr.json();}catch(e){}
     document.getElementById('footer-time').textContent='Updated '+new Date().toISOString().split('T')[0];
     render();
   }catch(e){document.getElementById('dashboard').innerHTML='<div class="loading" style="color:#dc2626">Error: '+e.message+'</div>'}
