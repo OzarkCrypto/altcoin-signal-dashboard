@@ -7,13 +7,33 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16.8px}
-body{background:#fff;color:#111;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5}
+body{background:#fff;color:#111;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.6}
+a{color:#111}
 
-.header{padding:20px 28px 14px;border-bottom:1px solid #e0e0e0}
-.logo{font-size:1rem;font-weight:700;letter-spacing:-0.01em}
+.header{padding:20px 28px 14px;border-bottom:1px solid #e0e0e0;display:flex;justify-content:space-between;align-items:center}
+.header-left{}
+.logo{font-size:1rem;font-weight:700}
 .subtitle{font-size:0.75rem;color:#888;margin-top:2px}
+.lang-toggle{
+  display:flex;border:1px solid #ddd;border-radius:4px;overflow:hidden;font-size:0.7rem;
+}
+.lang-btn{
+  padding:4px 12px;border:none;background:#fff;color:#888;cursor:pointer;font-family:inherit;
+}
+.lang-btn.active{background:#111;color:#fff}
 
-.config-bar{display:flex;gap:6px;padding:10px 28px;border-bottom:1px solid #e0e0e0;background:#fafafa}
+.mode-bar{display:flex;gap:0;border-bottom:1px solid #e0e0e0}
+.mode-btn{
+  flex:1;font-size:0.8rem;padding:10px 20px;border:none;background:#fff;
+  color:#888;cursor:pointer;font-family:inherit;font-weight:500;
+  border-bottom:2px solid transparent;text-align:center;
+}
+.mode-btn:hover{color:#111;background:#fafafa}
+.mode-btn.active-off{color:#111;border-bottom-color:#dc2626;font-weight:700}
+.mode-btn.active-def{color:#111;border-bottom-color:#16a34a;font-weight:700}
+.mode-btn.active-how{color:#111;border-bottom-color:#2563eb;font-weight:700}
+
+.config-bar{display:flex;gap:6px;padding:10px 28px;border-bottom:1px solid #eee;background:#fafafa}
 .config-btn{
   font-size:0.7rem;padding:4px 12px;border:1px solid #ddd;border-radius:3px;
   background:#fff;color:#555;cursor:pointer;font-family:inherit;
@@ -22,178 +42,402 @@ body{background:#fff;color:#111;font-family:-apple-system,BlinkMacSystemFont,"Se
 .config-btn.active{background:#111;color:#fff;border-color:#111}
 
 .dashboard{padding:20px 28px 40px;max-width:1200px}
-
 .section-title{
   font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;
   color:#999;margin:24px 0 8px;padding-bottom:6px;border-bottom:1px solid #eee;
 }
 .section-title:first-child{margin-top:0}
+.strat-badge{
+  display:inline-block;font-size:0.55rem;padding:2px 6px;border-radius:2px;
+  font-weight:700;letter-spacing:0.05em;margin-left:6px;vertical-align:middle;
+}
+.badge-off{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.badge-def{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
 
 .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:#e0e0e0;border:1px solid #e0e0e0;border-radius:4px;overflow:hidden;margin-bottom:4px}
 .metric{background:#fff;padding:12px 14px}
 .metric-label{font-size:0.65rem;color:#999;text-transform:uppercase;letter-spacing:0.05em}
 .metric-value{font-size:1.3rem;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
 .metric-sub{font-size:0.65rem;color:#bbb;margin-top:1px}
-.positive{color:#16a34a}
-.negative{color:#dc2626}
-.neutral{color:#a16207}
+.positive{color:#16a34a}.negative{color:#dc2626}.neutral{color:#a16207}
 
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-th{
-  font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;
-  color:#999;padding:6px 8px;text-align:right;border-bottom:2px solid #e0e0e0;
-}
+th{font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#999;padding:6px 8px;text-align:right;border-bottom:2px solid #e0e0e0}
 th:first-child{text-align:left}
 td{font-size:0.8rem;padding:6px 8px;text-align:right;border-bottom:1px solid #f0f0f0}
 td:first-child{text-align:left}
 tr:hover{background:#fafafa}
-
-.period-table td:first-child{font-weight:600;color:#111}
 .coin-table th:nth-child(2){text-align:left}
 .coin-table td:nth-child(2){text-align:left;font-weight:600}
 
 .bar-wrap{display:flex;align-items:center;gap:4px;justify-content:flex-end}
 .bar{height:10px;border-radius:1px;min-width:1px}
-.bar.pos{background:#16a34a}
-.bar.neg{background:#dc2626}
+.bar.pos{background:#16a34a}.bar.neg{background:#dc2626}
 
 .tabs{display:flex;gap:2px;margin-bottom:6px}
-.tab{
-  font-size:0.7rem;padding:4px 10px;border:none;background:transparent;
-  color:#999;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;
-}
+.tab{font-size:0.7rem;padding:4px 10px;border:none;background:transparent;color:#999;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent}
 .tab:hover{color:#111}
 .tab.active{color:#111;border-bottom-color:#111;font-weight:600}
 
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+.compare-card{border:1px solid #e0e0e0;border-radius:4px;padding:14px 16px}
+.compare-card h4{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
+.compare-card .stat{display:flex;justify-content:space-between;padding:3px 0;font-size:0.8rem}
+.compare-card .stat-label{color:#888}
+.compare-card .stat-value{font-weight:600;font-variant-numeric:tabular-nums}
+
 .verdict{border:1px solid #e0e0e0;border-radius:4px;padding:16px 18px;margin-top:16px}
 .verdict h3{font-size:0.75rem;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
-.verdict p{font-size:0.82rem;color:#555;line-height:1.65;margin-bottom:4px}
+.verdict p{font-size:0.82rem;color:#555;line-height:1.7;margin-bottom:6px}
 .verdict strong{color:#111}
 
+/* How it works */
+.how-section{margin-bottom:28px}
+.how-section h2{font-size:1rem;font-weight:700;margin-bottom:12px;padding-top:4px}
+.how-section h3{font-size:0.85rem;font-weight:700;margin:16px 0 6px;color:#333}
+.how-section p{font-size:0.82rem;color:#444;line-height:1.75;margin-bottom:8px}
+.how-section .step{
+  border-left:3px solid #e0e0e0;padding:10px 16px;margin:8px 0;background:#fafafa;border-radius:0 4px 4px 0;
+}
+.how-section .step.off{border-left-color:#dc2626}
+.how-section .step.def{border-left-color:#16a34a}
+.how-section .step-num{font-size:0.65rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
+.how-section .step-title{font-size:0.82rem;font-weight:700;color:#111;margin-bottom:4px}
+.how-section .step-desc{font-size:0.78rem;color:#555;line-height:1.65}
+.how-section .example{
+  background:#f8f8f8;border:1px solid #eee;border-radius:4px;padding:10px 14px;
+  font-size:0.78rem;color:#555;margin:8px 0;line-height:1.6;
+}
+.how-section .example strong{color:#111}
+
 .loading{display:flex;align-items:center;justify-content:center;height:50vh;color:#999;font-size:0.85rem}
-
 .footer{padding:16px 28px;border-top:1px solid #eee;font-size:0.65rem;color:#bbb;display:flex;justify-content:space-between}
-
 @media(max-width:768px){
   .header,.config-bar,.dashboard,.footer{padding-left:14px;padding-right:14px}
   .metrics{grid-template-columns:repeat(2,1fr)}
+  .compare{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="logo">Altcoin Signal Dashboard</div>
-  <div class="subtitle">RS + Volume Structure + Funding Rate · Binance USDT Perps · OI ≥ $5M</div>
+  <div class="header-left">
+    <div class="logo">Altcoin Signal Dashboard</div>
+    <div class="subtitle" id="subtitle"></div>
+  </div>
+  <div class="lang-toggle" id="lang-toggle"></div>
 </div>
-
+<div class="mode-bar" id="mode-bar"></div>
 <div class="config-bar" id="config-bar"></div>
-
-<div class="dashboard" id="dashboard">
-  <div class="loading">Loading...</div>
-</div>
-
+<div class="dashboard" id="dashboard"><div class="loading">Loading...</div></div>
 <div class="footer">
-  <span>Data source: Binance USDT Perpetual Futures</span>
+  <span id="footer-src"></span>
   <span id="footer-time"></span>
 </div>
-
 <script>
-let DATA=null,UNIVERSE=null,activeConfig='v2_tight_stop',activePeriod='full_2025',coinView='top';
+var DATA=null,mode='compare',activeOff='off_wide_trail',activeDef='def_tight',activePeriod='full_2025',coinView='top',lang='en';
 
-const PERIOD_LABELS={
-  full_2025:'2025 Full Year',bull_q4_2024:'2025 H1 (Jan\u2013Jun)',
-  bear_h2_2025:'2025 H2 (Jul\u2013Dec)',recent_2026:'2026 Q1 (Jan\u2013Mar)'
+var T = {
+  en: {
+    subtitle: 'Screening tool for altcoins listed on Binance Futures',
+    compare: 'Compare', offensive: 'Momentum', defensive: 'Protective', howItWorks: 'How It Works',
+    headToHead: 'Side by Side \u2014 Momentum vs Protective',
+    period: 'Period', type: 'Type', signalMed: 'Signal Result', bnhMed: 'If You Just Held', btcCol: 'Bitcoin', alpha: 'Edge', beatBnh: 'Beat Holding', winRate: 'Win %', trades: 'Trades',
+    stratProfile: 'Strategy Profile',
+    coins: 'Coins', coinsDesc: 'tested', total: 'total', perTrade: 'per trade', ofCoins: 'of coins',
+    alphaVsBnh: 'Edge vs Holding',
+    median: 'median',
+    overview: 'Overview',
+    periodComparison: 'Period Comparison',
+    rankings: 'Rankings',
+    top10: 'Top 10', bottom10: 'Bottom 10',
+    symbol: 'Symbol', signal: 'Signal', bnh: 'Held', btc: 'BTC', wr: 'Win %',
+    full2025: 'Full 2025', h12025: 'Jan\u2013Jun 2025', h22025: 'Jul\u2013Dec 2025', q12026: 'Jan\u2013Mar 2026',
+    offLabel: 'MOMENTUM', defLabel: 'PROTECTIVE',
+    logic: 'How it enters',
+    stopTrail: 'Exit rules',
+    footerSrc: 'Data: Binance Futures \u00b7 100 coins \u00b7 Jan 2025 \u2013 Mar 2026',
+    assessment: 'Assessment',
+    offBtnBreakout20: 'Standard', offBtnBreakout14: 'Fast', offBtnAggressive: 'Aggressive', offBtnWideTrail: 'Wide Trail',
+    defBtnTight: 'Tight Exit', defBtnBalanced: 'Balanced',
+    offLogic: 'Price breaks new high + gaining on Bitcoin + high trading volume',
+    defLogic: 'Outperforming Bitcoin on trend + more volume on up days + shorts paying longs',
+    offStop: 'Sells if price drops 20% from entry or 18% from peak',
+    defStop: 'Sells if price drops 10% from entry or 8% from peak',
+    verdictOff: function(ot,dt,obp,dbp){
+      return '<p><strong>Momentum (Wide Trail)</strong> enters less often ('+ot+' vs '+dt+' trades) and holds positions longer. Across all of 2025, it beat simply holding in <strong>'+obp+'%</strong> of coins tested. It works by catching price breakouts and riding them with a wide safety net.</p>';
+    },
+    verdictDef: function(obp2,dbp2){
+      return '<p><strong>Protective (Tight Exit)</strong> is better at avoiding losses in falling markets (Jul\u2013Dec 2025: beat holding in <strong>'+dbp2+'%</strong> vs '+obp2+'% of coins). It cuts losses quickly but also exits winning trades early.</p>';
+    },
+    verdictBoth: '<p>Both strategies work as <strong>damage control tools</strong> in this period. Altcoins broadly fell even when Bitcoin rose, so positive returns were hard to achieve. These signals help you avoid the worst losses rather than generate profits.</p>',
+
+    // How it works page
+    howTitle: 'How This Dashboard Works',
+    howIntro: 'This dashboard tests two simple strategies for picking which altcoins to buy and when. It looks at historical data to see how well each strategy would have performed.',
+    howUniverseTitle: 'Which Coins Are Included?',
+    howUniverse: 'We start with all altcoins that have futures contracts on Binance (the world\'s largest crypto exchange). Then we filter out coins with less than $5 million in open bets \u2014 if too few people are trading a coin, the data becomes unreliable. This leaves us with roughly 100 coins to test.',
+    howTwoTitle: 'Two Strategies',
+    howMomentumTitle: 'Momentum Strategy ("Offensive")',
+    howMomentumDesc: 'This strategy tries to jump on coins that are starting to surge. Think of it like surfing \u2014 you want to catch the wave as it forms.',
+    howMomStep1Title: 'Is the price breaking out?',
+    howMomStep1Desc: 'The strategy checks if a coin\'s price just hit its highest point in the last 20 days. If yes, something may be driving it up.',
+    howMomStep2Title: 'Is it beating Bitcoin?',
+    howMomStep2Desc: 'It\'s not enough for a coin to go up \u2014 everything goes up when Bitcoin goes up. The strategy checks if this coin is gaining faster than Bitcoin, and if that outperformance is accelerating.',
+    howMomStep3Title: 'Is volume surging?',
+    howMomStep3Desc: 'When a coin\'s trading volume suddenly spikes above its 20-day average while the price is rising, it suggests real buying pressure, not just random movement.',
+    howMomStep4Title: 'Are leveraged traders confirming?',
+    howMomStep4Desc: 'On Binance Futures, traders who bet on price increases ("longs") periodically pay a fee to traders betting on decreases ("shorts"), and vice versa. When longs are paying, it means many traders are betting on further upside. This confirms the momentum.',
+    howMomEntry: 'The strategy buys when at least 2 of these 4 conditions are true. It sells when the price drops 20% from entry, or drops 18% from its highest point since entry, or when all signals turn off.',
+    howProtectiveTitle: 'Protective Strategy ("Defensive")',
+    howProtectiveDesc: 'This strategy is more cautious. Instead of chasing surges, it looks for coins that are quietly holding up well. Think of it like picking the strongest player on the team \u2014 not the flashiest, but the most consistent.',
+    howDefStep1Title: 'Is it trending better than Bitcoin?',
+    howDefStep1Desc: 'The strategy looks at the coin\'s price relative to Bitcoin over the medium term (14 days vs 50 days). If the shorter trend is above the longer trend, the coin is gaining ground on Bitcoin.',
+    howDefStep2Title: 'Is buying stronger than selling?',
+    howDefStep2Desc: 'Over the last 14 days, the strategy compares total trading volume on days the price went up versus days it went down. If there\'s 15% more volume on up days, it suggests quiet accumulation.',
+    howDefStep3Title: 'Are short sellers paying?',
+    howDefStep3Desc: 'When the funding rate is negative, traders betting against the coin ("shorts") are paying a fee to hold their positions. This means the market is positioned bearishly, but the price hasn\'t dropped \u2014 a sign the selling pressure may be exhausted.',
+    howDefEntry: 'The strategy buys when at least 2 of these 3 conditions are true. It sells when the price drops 10% from entry, or drops 8% from its highest point since entry, or when all signals turn off.',
+    howReadingTitle: 'Reading the Results',
+    howReadingDesc: 'For each strategy, we simulate trading every coin in our list over different time periods and compare the results to two alternatives:',
+    howReading1: '<strong>"If You Just Held"</strong> \u2014 What would have happened if you bought the coin at the start of the period and never sold? This is the simplest possible strategy.',
+    howReading2: '<strong>"Bitcoin"</strong> \u2014 How did Bitcoin perform in the same period? If a strategy can\'t beat just holding Bitcoin, it\'s not adding value.',
+    howReading3: '<strong>"Beat Holding"</strong> \u2014 In what percentage of coins did the signal outperform simply holding? Above 50% means the signal is adding value on average.',
+    howReading4: '<strong>"Win %"</strong> \u2014 What percentage of individual trades made money? A 40% win rate can still be profitable if the winning trades are much larger than the losing ones.',
+    howCaveatsTitle: 'Important Limitations',
+    howCaveat1: 'This is a <strong>backtest</strong> \u2014 it shows what would have happened in the past, not what will happen in the future.',
+    howCaveat2: 'Trading fees (roughly 0.08% per round trip) are not included. With many trades, fees add up.',
+    howCaveat3: 'The test period (2025\u20132026 Q1) was mostly a bad period for altcoins. The strategies might look different in a strong altcoin rally.',
+    howCaveat4: 'We tested multiple parameter settings and showed the best ones. This "overfitting" means real performance may be worse.',
+  },
+  kr: {
+    subtitle: '\uBC14\uC774\uB09C\uC2A4 \uC120\uBB3C \uC0C1\uC7A5 \uC54C\uD2B8\uCF54\uC778 \uC2A4\uD06C\uB9AC\uB2DD \uB3C4\uAD6C',
+    compare: '\uBE44\uAD50', offensive: '\uACF5\uACA9\uD615', defensive: '\uBC29\uC5B4\uD615', howItWorks: '\uC791\uB3D9 \uC6D0\uB9AC',
+    headToHead: '\uACF5\uACA9\uD615 vs \uBC29\uC5B4\uD615 \uBE44\uAD50',
+    period: '\uAE30\uAC04', type: '\uC720\uD615', signalMed: '\uC2DC\uADF8\uB110 \uACB0\uACFC', bnhMed: '\uADF8\uB0E5 \uB4E4\uACE0 \uC788\uC5C8\uC744 \uB54C', btcCol: '\uBE44\uD2B8\uCF54\uC778', alpha: '\uCC28\uC774', beatBnh: '\uBCF4\uC720 \uB300\uBE44 \uC2B9', winRate: '\uC2B9\uB960', trades: '\uAC70\uB798\uC218',
+    stratProfile: '\uC804\uB7B5 \uD504\uB85C\uD544',
+    coins: '\uCF54\uC778 \uC218', coinsDesc: '\uD14C\uC2A4\uD2B8', total: '\uCD1D', perTrade: '\uAC74\uB2F9', ofCoins: '\uCF54\uC778 \uAE30\uC900',
+    alphaVsBnh: '\uBCF4\uC720 \uB300\uBE44 \uCC28\uC774',
+    median: '\uC911\uAC04\uAC12',
+    overview: '\uC694\uC57D',
+    periodComparison: '\uAE30\uAC04\uBCC4 \uBE44\uAD50',
+    rankings: '\uC21C\uC704',
+    top10: '\uC0C1\uC704 10', bottom10: '\uD558\uC704 10',
+    symbol: '\uCF54\uC778', signal: '\uC2DC\uADF8\uB110', bnh: '\uBCF4\uC720', btc: 'BTC', wr: '\uC2B9\uB960',
+    full2025: '2025 \uC804\uCCB4', h12025: '2025 \uC0C1\uBC18\uAE30', h22025: '2025 \uD558\uBC18\uAE30', q12026: '2026 1\uBD84\uAE30',
+    offLabel: '\uACF5\uACA9\uD615', defLabel: '\uBC29\uC5B4\uD615',
+    logic: '\uC9C4\uC785 \uBC29\uC2DD',
+    stopTrail: '\uCCAD\uC0B0 \uBC29\uC2DD',
+    footerSrc: '\uB370\uC774\uD130: \uBC14\uC774\uB09C\uC2A4 \uC120\uBB3C \u00b7 100\uAC1C \uCF54\uC778 \u00b7 2025.01 \u2013 2026.03',
+    assessment: '\uD3C9\uAC00',
+    offBtnBreakout20: '\uAE30\uBCF8\uD615', offBtnBreakout14: '\uBE60\uB978 \uC9C4\uC785', offBtnAggressive: '\uACF5\uACA9\uC801', offBtnWideTrail: '\uB110\uB108\uD55C \uCD9C\uAD6C',
+    defBtnTight: '\uBE60\uB978 \uCCAD\uC0B0', defBtnBalanced: '\uADE0\uD615',
+    offLogic: '\uC2E0\uACE0\uAC00 \uB3CC\uD30C + \uBE44\uD2B8\uCF54\uC778 \uB300\uBE44 \uAC15\uC138 + \uAC70\uB798\uB7C9 \uAE09\uC99D',
+    defLogic: '\uBE44\uD2B8\uCF54\uC778 \uB300\uBE44 \uC0C1\uC2B9 \uCD94\uC138 + \uC591\uBD09\uC77C \uAC70\uB798\uB7C9 \uC6B0\uC138 + \uC20F \uD3EC\uC9C0\uC158 \uACFC\uBC00',
+    offStop: '\uC9C4\uC785\uAC00 \uB300\uBE44 20% \uD558\uB77D \uB610\uB294 \uACE0\uC810 \uB300\uBE44 18% \uD558\uB77D \uC2DC \uCCAD\uC0B0',
+    defStop: '\uC9C4\uC785\uAC00 \uB300\uBE44 10% \uD558\uB77D \uB610\uB294 \uACE0\uC810 \uB300\uBE44 8% \uD558\uB77D \uC2DC \uCCAD\uC0B0',
+    verdictOff: function(ot,dt,obp,dbp){
+      return '<p><strong>\uACF5\uACA9\uD615(\uB110\uB108\uD55C \uCD9C\uAD6C)</strong>\uC740 \uC9C4\uC785 \uD69F\uC218\uAC00 \uC801\uACE0('+ot+'\uD68C vs '+dt+'\uD68C) \uB4E4\uC5B4\uAC00\uBA74 \uC624\uB798 \uBCF4\uC720\uD569\uB2C8\uB2E4. 2025\uB144 \uC804\uCCB4 \uAE30\uC900\uC73C\uB85C \uD14C\uC2A4\uD2B8\uD55C \uCF54\uC778 \uC911 <strong>'+obp+'%</strong>\uC5D0\uC11C \uADF8\uB0E5 \uB4E4\uACE0 \uC788\uB294 \uAC83\uBCF4\uB2E4 \uB098\uC740 \uACB0\uACFC\uB97C \uBCF4\uC600\uC2B5\uB2C8\uB2E4.</p>';
+    },
+    verdictDef: function(obp2,dbp2){
+      return '<p><strong>\uBC29\uC5B4\uD615(\uBE60\uB978 \uCCAD\uC0B0)</strong>\uC740 \uD558\uB77D\uC7A5\uC5D0\uC11C \uC190\uC2E4 \uBC29\uC5B4\uAC00 \uB354 \uC88B\uC2B5\uB2C8\uB2E4 (2025 \uD558\uBC18\uAE30: \uBCF4\uC720 \uB300\uBE44 \uC2B9\uB960 <strong>'+dbp2+'%</strong> vs '+obp2+'%). \uC190\uC2E4\uC744 \uBE68\uB9AC \uC790\uB974\uB294 \uB300\uC2E0 \uC218\uC775\uB3C4 \uBE68\uB9AC \uB04A\uAE41\uB2C8\uB2E4.</p>';
+    },
+    verdictBoth: '<p>\uC774 \uAE30\uAC04\uC5D0 \uB450 \uC804\uB7B5 \uBAA8\uB450 <strong>\uC190\uC2E4\uC744 \uC904\uC774\uB294 \uB3C4\uAD6C</strong>\uB85C \uC791\uB3D9\uD588\uC2B5\uB2C8\uB2E4. \uBE44\uD2B8\uCF54\uC778\uC774 \uC62C\uB77C\uB3C4 \uC54C\uD2B8\uCF54\uC778\uC740 \uB300\uBD80\uBD84 \uD558\uB77D\uD55C \uC7A5\uC774\uB77C \uC591\uC218 \uC218\uC775\uC744 \uB0B4\uAE30 \uC5B4\uB824\uC6E0\uC2B5\uB2C8\uB2E4. \uC774 \uC2DC\uADF8\uB110\uC740 \uC218\uC775\uC744 \uB0B4\uB294 \uAC83\uBCF4\uB2E4 \uD070 \uC190\uC2E4\uC744 \uD53C\uD558\uB294 \uB370 \uB3C4\uC6C0\uC744 \uC90D\uB2C8\uB2E4.</p>',
+
+    howTitle: '\uC774 \uB300\uC2DC\uBCF4\uB4DC\uB294 \uC5B4\uB5BB\uAC8C \uC791\uB3D9\uD558\uB098\uC694?',
+    howIntro: '\uC774 \uB300\uC2DC\uBCF4\uB4DC\uB294 \uC5B4\uB5A4 \uC54C\uD2B8\uCF54\uC778\uC744 \uC5B8\uC81C \uC0AC\uACE0 \uD314\uC9C0\uB97C \uD310\uB2E8\uD558\uB294 \uB450 \uAC00\uC9C0 \uBC29\uBC95\uC744 \uACFC\uAC70 \uB370\uC774\uD130\uB85C \uD14C\uC2A4\uD2B8\uD55C \uACB0\uACFC\uC785\uB2C8\uB2E4.',
+    howUniverseTitle: '\uC5B4\uB5A4 \uCF54\uC778\uC774 \uD3EC\uD568\uB418\uB098\uC694?',
+    howUniverse: '\uC138\uACC4 \uCD5C\uB300 \uAC70\uB798\uC18C\uC778 \uBC14\uC774\uB09C\uC2A4\uC5D0\uC11C \uC120\uBB3C \uAC70\uB798\uAC00 \uAC00\uB2A5\uD55C \uBAA8\uB4E0 \uC54C\uD2B8\uCF54\uC778\uC5D0\uC11C \uC2DC\uC791\uD569\uB2C8\uB2E4. \uADF8 \uC911\uC5D0\uC11C \uBBF8\uACB0\uC81C \uBCA0\uD305 \uADDC\uBAA8(\uC5BC\uB9C8\uB098 \uB9CE\uC740 \uC0AC\uB78C\uB4E4\uC774 \uD3EC\uC9C0\uC158\uC744 \uC5F4\uC5B4\uB450\uACE0 \uC788\uB294\uAC00)\uAC00 500\uB9CC \uB2EC\uB7EC \uBBF8\uB9CC\uC778 \uCF54\uC778\uC740 \uC81C\uC678\uD569\uB2C8\uB2E4. \uAC70\uB798\uB7C9\uC774 \uB108\uBB34 \uC801\uC73C\uBA74 \uB370\uC774\uD130\uAC00 \uC2E0\uB8B0\uD560 \uC218 \uC5C6\uAE30 \uB54C\uBB38\uC785\uB2C8\uB2E4. \uC774\uB807\uAC8C \uD558\uBA74 \uC57D 100\uAC1C \uCF54\uC778\uC774 \uB0A8\uC2B5\uB2C8\uB2E4.',
+    howTwoTitle: '\uB450 \uAC00\uC9C0 \uC804\uB7B5',
+    howMomentumTitle: '\uACF5\uACA9\uD615 \uC804\uB7B5',
+    howMomentumDesc: '\uAE09\uB4F1\uD558\uAE30 \uC2DC\uC791\uD558\uB294 \uCF54\uC778\uC5D0 \uBE60\uB974\uAC8C \uD0C0\uB294 \uC804\uB7B5\uC785\uB2C8\uB2E4. \uC11C\uD551\uC73C\uB85C \uBE44\uC720\uD558\uBA74, \uD30C\uB3C4\uAC00 \uD615\uC131\uB420 \uB54C \uBE60\uB974\uAC8C \uC62C\uB77C\uD0C0\uB294 \uAC83\uC785\uB2C8\uB2E4.',
+    howMomStep1Title: '\uAC00\uACA9\uC774 \uC2E0\uACE0\uAC00\uB97C \uB3CC\uD30C\uD588\uB098\uC694?',
+    howMomStep1Desc: '\uCD5C\uADFC 20\uC77C \uC911 \uAC00\uC7A5 \uB192\uC740 \uAC00\uACA9\uC744 \uB118\uC5C8\uB294\uC9C0 \uD655\uC778\uD569\uB2C8\uB2E4. \uADF8\uB807\uB2E4\uBA74 \uBB54\uAC00\uAC00 \uAC00\uACA9\uC744 \uB04C\uC5B4\uC62C\uB9AC\uACE0 \uC788\uB2E4\uB294 \uC2E0\uD638\uC785\uB2C8\uB2E4.',
+    howMomStep2Title: '\uBE44\uD2B8\uCF54\uC778\uBCF4\uB2E4 \uB354 \uAC15\uD558\uAC8C \uC624\uB974\uACE0 \uC788\uB098\uC694?',
+    howMomStep2Desc: '\uCF54\uC778\uC774 \uC624\uB978\uB2E4\uACE0 \uB2E4 \uC88B\uC740 \uAC74 \uC544\uB2D9\uB2C8\uB2E4. \uBE44\uD2B8\uCF54\uC778\uC774 \uC624\uB974\uBA74 \uB2E4 \uAC19\uC774 \uC624\uB974\uB2C8\uAE4C\uC694. \uC774 \uCF54\uC778\uC774 \uBE44\uD2B8\uCF54\uC778\uBCF4\uB2E4 \uB354 \uBE60\uB974\uAC8C \uC624\uB974\uACE0 \uC788\uB294\uC9C0, \uADF8\uB9AC\uACE0 \uADF8 \uCC28\uC774\uAC00 \uC810\uC810 \uBC8C\uC5B4\uC9C0\uACE0 \uC788\uB294\uC9C0 \uD655\uC778\uD569\uB2C8\uB2E4.',
+    howMomStep3Title: '\uAC70\uB798\uB7C9\uC774 \uAE09\uC99D\uD588\uB098\uC694?',
+    howMomStep3Desc: '\uAC00\uACA9\uC774 \uC624\uB974\uBA74\uC11C \uAC70\uB798\uB7C9\uC774 \uD3C9\uC18C\uBCF4\uB2E4 1.5\uBC30 \uC774\uC0C1 \uAE09\uC99D\uD558\uBA74, \uB204\uAD70\uAC00 \uC9C4\uC9DC\uB85C \uC0AC\uACE0 \uC788\uB2E4\uB294 \uB73B\uC785\uB2C8\uB2E4. \uB2E8\uC21C\uD55C \uAC00\uACA9 \uB9C1\uB451\uC774 \uC544\uB2C8\uB77C \uC2E4\uC81C \uB9E4\uC218\uC138\uAC00 \uB4E4\uC5B4\uC624\uACE0 \uC788\uB2E4\uB294 \uC2E0\uD638\uC785\uB2C8\uB2E4.',
+    howMomStep4Title: '\uB808\uBC84\uB9AC\uC9C0 \uAC70\uB798\uC790\uB4E4\uB3C4 \uC0C1\uC2B9\uC5D0 \uBCA0\uD305\uD558\uACE0 \uC788\uB098\uC694?',
+    howMomStep4Desc: '\uBC14\uC774\uB09C\uC2A4 \uC120\uBB3C\uC5D0\uC11C\uB294 \uC0C1\uC2B9\uC5D0 \uBCA0\uD305\uD55C \uC0AC\uB78C("Long"\uD3EC\uC9C0\uC158)\uC774 \uD558\uB77D\uC5D0 \uBCA0\uD305\uD55C \uC0AC\uB78C("Short"\uD3EC\uC9C0\uC158)\uC5D0\uAC8C \uC8FC\uAE30\uC801\uC73C\uB85C \uC218\uC218\uB8CC\uB97C \uB0C5\uB2C8\uB2E4(\uBC18\uB300\uB3C4 \uB9C8\uCC2C\uAC00\uC9C0). \uC0C1\uC2B9 \uBCA0\uD305 \uCE21\uC774 \uC218\uC218\uB8CC\uB97C \uB0B4\uACE0 \uC788\uB2E4\uBA74, \uB9CE\uC740 \uC0AC\uB78C\uB4E4\uC774 \uCD94\uAC00 \uC0C1\uC2B9\uC744 \uAE30\uB300\uD558\uACE0 \uC788\uB2E4\uB294 \uC758\uBBF8\uC785\uB2C8\uB2E4.',
+    howMomEntry: '\uC704 4\uAC00\uC9C0 \uC870\uAC74 \uC911 2\uAC1C \uC774\uC0C1\uC774 \uCDA9\uC871\uB418\uBA74 \uB9E4\uC218\uD569\uB2C8\uB2E4. \uC9C4\uC785\uAC00 \uB300\uBE44 20% \uD558\uB77D, \uCD5C\uACE0\uC810 \uB300\uBE44 18% \uD558\uB77D, \uB610\uB294 \uBAA8\uB4E0 \uC2E0\uD638\uAC00 \uAEBC\uC9C0\uBA74 \uB9E4\uB3C4\uD569\uB2C8\uB2E4.',
+    howProtectiveTitle: '\uBC29\uC5B4\uD615 \uC804\uB7B5',
+    howProtectiveDesc: '\uB354 \uC2E0\uC911\uD55C \uC804\uB7B5\uC785\uB2C8\uB2E4. \uAE09\uB4F1\uC744 \uCAD3\uB294 \uB300\uC2E0, \uC870\uC6A9\uD788 \uBC84\uD2F0\uACE0 \uC788\uB294 \uAC15\uD55C \uCF54\uC778\uC744 \uCCAB\uC2B5\uB2C8\uB2E4. \uAC00\uC7A5 \uD654\uB824\uD558\uC9C4 \uC54A\uC9C0\uB9CC \uAC00\uC7A5 \uAFB8\uC900\uD55C \uC120\uC218\uB97C \uACE0\uB974\uB294 \uAC83\uACFC \uBE44\uC2B7\uD569\uB2C8\uB2E4.',
+    howDefStep1Title: '\uBE44\uD2B8\uCF54\uC778\uBCF4\uB2E4 \uCD94\uC138\uAC00 \uC88B\uC740\uAC00\uC694?',
+    howDefStep1Desc: '\uBE44\uD2B8\uCF54\uC778 \uB300\uBE44 \uC774 \uCF54\uC778\uC758 \uAC00\uACA9\uC744 \uC911\uAE30\uC801\uC73C\uB85C(14\uC77C vs 50\uC77C) \uBD05\uB2C8\uB2E4. \uC9E7\uC740 \uCD94\uC138\uAC00 \uAE34 \uCD94\uC138 \uC704\uC5D0 \uC788\uC73C\uBA74, \uBE44\uD2B8\uCF54\uC778 \uB300\uBE44 \uC810\uC810 \uAC15\uD574\uC9C0\uACE0 \uC788\uB2E4\uB294 \uB73B\uC785\uB2C8\uB2E4.',
+    howDefStep2Title: '\uB9E4\uC218\uC138\uAC00 \uB9E4\uB3C4\uC138\uBCF4\uB2E4 \uAC15\uD55C\uAC00\uC694?',
+    howDefStep2Desc: '\uCD5C\uADFC 14\uC77C\uAC04 \uAC00\uACA9\uC774 \uC624\uB978 \uB0A0\uC758 \uCD1D \uAC70\uB798\uB7C9\uACFC \uB0B4\uB9B0 \uB0A0\uC758 \uCD1D \uAC70\uB798\uB7C9\uC744 \uBE44\uAD50\uD569\uB2C8\uB2E4. \uC624\uB978 \uB0A0\uC758 \uAC70\uB798\uB7C9\uC774 15% \uC774\uC0C1 \uB9CE\uC73C\uBA74, \uB204\uAD70\uAC00 \uC870\uC6A9\uD788 \uBAA8\uC73C\uACE0 \uC788\uB2E4\uB294 \uC2E0\uD638\uC785\uB2C8\uB2E4.',
+    howDefStep3Title: '\uD558\uB77D\uC5D0 \uBCA0\uD305\uD55C \uC0AC\uB78C\uB4E4\uC774 \uC218\uC218\uB8CC\uB97C \uB0B4\uACE0 \uC788\uB098\uC694?',
+    howDefStep3Desc: '\uC218\uC218\uB8CC \uBE44\uC728(Funding Rate)\uC774 \uB9C8\uC774\uB108\uC2A4\uC77C \uB54C, \uD558\uB77D\uC5D0 \uBCA0\uD305\uD55C \uC0AC\uB78C\uB4E4\uC774 \uD3EC\uC9C0\uC158 \uC720\uC9C0 \uBE44\uC6A9\uC744 \uB0B4\uACE0 \uC788\uB2E4\uB294 \uB73B\uC785\uB2C8\uB2E4. \uC2DC\uC7A5\uC774 \uD558\uB77D\uC744 \uAE30\uB300\uD558\uC9C0\uB9CC \uC2E4\uC81C\uB85C \uB5A8\uC5B4\uC9C0\uC9C0 \uC54A\uACE0 \uC788\uB2E4\uBA74, \uB9E4\uB3C4 \uC555\uB825\uC774 \uC18C\uC9C4\uB420 \uC218 \uC788\uB2E4\uB294 \uC2E0\uD638\uC785\uB2C8\uB2E4.',
+    howDefEntry: '\uC704 3\uAC00\uC9C0 \uC870\uAC74 \uC911 2\uAC1C \uC774\uC0C1\uC774 \uCDA9\uC871\uB418\uBA74 \uB9E4\uC218\uD569\uB2C8\uB2E4. \uC9C4\uC785\uAC00 \uB300\uBE44 10% \uD558\uB77D, \uCD5C\uACE0\uC810 \uB300\uBE44 8% \uD558\uB77D, \uB610\uB294 \uBAA8\uB4E0 \uC2E0\uD638\uAC00 \uAEBC\uC9C0\uBA74 \uB9E4\uB3C4\uD569\uB2C8\uB2E4.',
+    howReadingTitle: '\uACB0\uACFC \uC77D\uB294 \uBC95',
+    howReadingDesc: '\uAC01 \uC804\uB7B5\uC5D0 \uB300\uD574 \uBAA8\uB4E0 \uCF54\uC778\uC744 \uC2DC\uBBAC\uB808\uC774\uC158 \uAC70\uB798\uD558\uACE0, \uB2E4\uC74C \uB450 \uAC00\uC9C0\uC640 \uBE44\uAD50\uD569\uB2C8\uB2E4:',
+    howReading1: '<strong>"\uADF8\uB0E5 \uB4E4\uACE0 \uC788\uC5C8\uC744 \uB54C"</strong> \u2014 \uAE30\uAC04 \uCD08\uC5D0 \uC0AC\uC11C \uD55C \uBC88\uB3C4 \uC548 \uD314\uC558\uC73C\uBA74 \uC5B4\uB5A0\uC744\uAE4C? \uAC00\uC7A5 \uB2E8\uC21C\uD55C \uC804\uB7B5\uC785\uB2C8\uB2E4.',
+    howReading2: '<strong>"\uBE44\uD2B8\uCF54\uC778"</strong> \u2014 \uAC19\uC740 \uAE30\uAC04\uC5D0 \uBE44\uD2B8\uCF54\uC778 \uC218\uC775\uB960\uC740? \uBE44\uD2B8\uCF54\uC778\uB9CC \uB4E4\uACE0 \uC788\uB294 \uAC83\uBCF4\uB2E4 \uBABB\uD558\uBA74 \uC758\uBBF8\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.',
+    howReading3: '<strong>"\uBCF4\uC720 \uB300\uBE44 \uC2B9"</strong> \u2014 \uD14C\uC2A4\uD2B8\uD55C \uCF54\uC778 \uC911 \uBA87 %\uC5D0\uC11C \uADF8\uB0E5 \uB4E4\uACE0 \uC788\uB294 \uAC83\uBCF4\uB2E4 \uB098\uC558\uB098? 50% \uC774\uC0C1\uC774\uBA74 \uC2DC\uADF8\uB110\uC774 \uD3C9\uADE0\uC801\uC73C\uB85C \uAC00\uCE58\uAC00 \uC788\uB2E4\uB294 \uB73B\uC785\uB2C8\uB2E4.',
+    howReading4: '<strong>"\uC2B9\uB960"</strong> \u2014 \uAC1C\uBCC4 \uAC70\uB798 \uC911 \uBA87 %\uAC00 \uC218\uC775\uC774 \uB0AC\uB098? 40% \uC2B9\uB960\uC774\uB77C\uB3C4 \uC774\uAE34 \uAC70\uB798\uC758 \uC218\uC775\uC774 \uC9C4 \uAC70\uB798\uC758 \uC190\uC2E4\uBCF4\uB2E4 \uD06C\uBA74 \uC804\uCCB4\uC801\uC73C\uB85C \uC218\uC775\uC774 \uB0A0 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
+    howCaveatsTitle: '\uC911\uC694\uD55C \uD55C\uACC4',
+    howCaveat1: '\uC774\uAC83\uC740 <strong>\uACFC\uAC70 \uD14C\uC2A4\uD2B8</strong>\uC785\uB2C8\uB2E4. \uACFC\uAC70\uC5D0 \uC5B4\uB5A0\uC744\uC9C0\uB97C \uBCF4\uC5EC\uC904 \uBFD0, \uBBF8\uB798\uB97C \uBCF4\uC7A5\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.',
+    howCaveat2: '\uAC70\uB798 \uC218\uC218\uB8CC(\uC655\uBCF5 \uC57D 0.08%)\uAC00 \uBC18\uC601\uB418\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4. \uAC70\uB798\uAC00 \uB9CE\uC73C\uBA74 \uC218\uC218\uB8CC\uAC00 \uC30D\uC785\uB2C8\uB2E4.',
+    howCaveat3: '\uD14C\uC2A4\uD2B8 \uAE30\uAC04(2025\uB144~2026\uB144 1\uBD84\uAE30)\uC740 \uB300\uBD80\uBD84 \uC54C\uD2B8\uCF54\uC778\uC5D0 \uC548 \uC88B\uC740 \uC2DC\uAE30\uC600\uC2B5\uB2C8\uB2E4. \uC54C\uD2B8\uCF54\uC778 \uC0C1\uC2B9\uC7A5\uC5D0\uC11C\uB294 \uACB0\uACFC\uAC00 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
+    howCaveat4: '\uC5EC\uB7EC \uC124\uC815\uAC12\uC744 \uD14C\uC2A4\uD2B8\uD558\uACE0 \uAC00\uC7A5 \uC88B\uC740 \uACB0\uACFC\uB97C \uBCF4\uC5EC\uC8FC\uACE0 \uC788\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uC131\uACFC\uB294 \uC774\uBCF4\uB2E4 \uB098\uC058 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
+  }
 };
-const CONFIG_LABELS={v2_tight_stop:'Tight Stop',v5_balanced:'Balanced',v6_strict:'Strict'};
 
-function pct(v,d=1){if(v==null)return'\u2014';const s=(v*100).toFixed(d);return(s>0?'+':'')+s+'%'}
+var PERIODS={full_2025:'full2025',h1_2025:'h12025',h2_2025:'h22025',q1_2026:'q12026'};
+var OFF_LABELS_KEY={off_breakout_20:'offBtnBreakout20',off_breakout_14:'offBtnBreakout14',off_aggressive:'offBtnAggressive',off_wide_trail:'offBtnWideTrail'};
+var DEF_LABELS_KEY={def_tight:'defBtnTight',def_balanced:'defBtnBalanced'};
+
+function t(key){return T[lang][key]||key}
+function pLabel(pk){return t(PERIODS[pk])}
+function pct(v,d){if(d===undefined)d=1;if(v==null)return'\u2014';var s=(v*100).toFixed(d);return(s>0?'+':'')+s+'%'}
 function pctC(v){return v>0.001?'positive':v<-0.001?'negative':'neutral'}
 
-function renderConfigBar(){
-  document.getElementById('config-bar').innerHTML=Object.entries(CONFIG_LABELS).map(([k,l])=>
-    '<button class="config-btn '+(k===activeConfig?'active':'')+'" onclick="activeConfig=\''+k+'\';renderConfigBar();renderDashboard()">'+l+'</button>'
-  ).join('');
+function renderLang(){
+  document.getElementById('lang-toggle').innerHTML=
+    '<button class="lang-btn '+(lang==='en'?'active':'')+'" onclick="lang=\'en\';render()">EN</button>'+
+    '<button class="lang-btn '+(lang==='kr'?'active':'')+'" onclick="lang=\'kr\';render()">KR</button>';
+  document.getElementById('subtitle').textContent=t('subtitle');
+  document.getElementById('footer-src').textContent=t('footerSrc');
 }
 
-function renderDashboard(){
-  if(!DATA)return;
-  var cfg=DATA[activeConfig],c=cfg[activePeriod]?cfg[activePeriod].summary:cfg.full_2025.summary;
-  var alpha=c.signal_median-c.bnh_median;
+function renderModeBar(){
+  document.getElementById('mode-bar').innerHTML=
+    '<button class="mode-btn '+(mode==='compare'?'active-off':'')+'" onclick="mode=\'compare\';render()">'+t('compare')+'</button>'+
+    '<button class="mode-btn '+(mode==='offensive'?'active-off':'')+'" onclick="mode=\'offensive\';render()">'+t('offensive')+'</button>'+
+    '<button class="mode-btn '+(mode==='defensive'?'active-def':'')+'" onclick="mode=\'defensive\';render()">'+t('defensive')+'</button>'+
+    '<button class="mode-btn '+(mode==='how'?'active-how':'')+'" onclick="mode=\'how\';render()">'+t('howItWorks')+'</button>';
+}
+
+function renderConfigBar(){
+  var el=document.getElementById('config-bar');
+  if(mode==='compare'||mode==='how'){el.innerHTML='';return}
+  var keys=mode==='offensive'?OFF_LABELS_KEY:DEF_LABELS_KEY;
+  var active=mode==='offensive'?activeOff:activeDef;
   var h='';
-  h+='<div class="section-title">Overview \u00b7 '+CONFIG_LABELS[activeConfig]+'</div>';
-  h+='<div class="metrics">';
-  h+='<div class="metric"><div class="metric-label">Coins</div><div class="metric-value">'+c.num_coins+'</div><div class="metric-sub">traded</div></div>';
-  h+='<div class="metric"><div class="metric-label">Trades</div><div class="metric-value">'+c.total_trades.toLocaleString()+'</div><div class="metric-sub">total</div></div>';
-  h+='<div class="metric"><div class="metric-label">Win Rate</div><div class="metric-value '+(c.win_rate>=0.4?'positive':'neutral')+'">'+(c.win_rate*100).toFixed(1)+'%</div><div class="metric-sub">per trade</div></div>';
-  h+='<div class="metric"><div class="metric-label">Alpha vs B&H</div><div class="metric-value '+pctC(alpha)+'">'+pct(alpha)+'</div><div class="metric-sub">median</div></div>';
-  h+='<div class="metric"><div class="metric-label">Beat B&H</div><div class="metric-value '+(c.beat_bnh_pct>=0.6?'positive':'negative')+'">'+(c.beat_bnh_pct*100).toFixed(0)+'%</div><div class="metric-sub">of coins</div></div>';
-  h+='</div>';
+  for(var k in keys){
+    h+='<button class="config-btn '+(k===active?'active':'')+'" onclick="'+(mode==='offensive'?'activeOff':'activeDef')+'=\''+k+'\';render()">'+t(keys[k])+'</button>';
+  }
+  el.innerHTML=h;
+}
 
-  h+='<div class="section-title">Period Comparison</div>';
-  h+='<table class="period-table"><thead><tr><th style="text-align:left">Period</th><th>BTC</th><th>Signal Med.</th><th>B&H Med.</th><th>Alpha</th><th>Win Rate</th><th>Beat B&H</th><th>Trades</th></tr></thead><tbody>';
-
-  var pkeys=Object.keys(PERIOD_LABELS);
-  for(var pi=0;pi<pkeys.length;pi++){
-    var pk=pkeys[pi],pl=PERIOD_LABELS[pk];
-    var s=cfg[pk]?cfg[pk].summary:null;if(!s)continue;
-    var a=s.signal_median-s.bnh_median;
-    h+='<tr style="cursor:pointer" onclick="activePeriod=\''+pk+'\';renderDashboard()">';
-    h+='<td>'+pl+'</td><td class="'+pctC(s.btc_ret)+'">'+pct(s.btc_ret)+'</td>';
-    h+='<td class="'+pctC(s.signal_median)+'">'+pct(s.signal_median)+'</td>';
-    h+='<td class="'+pctC(s.bnh_median)+'">'+pct(s.bnh_median)+'</td>';
-    h+='<td class="'+pctC(a)+'"><strong>'+pct(a)+'</strong></td>';
-    h+='<td>'+(s.win_rate*100).toFixed(1)+'%</td>';
-    h+='<td class="'+(s.beat_bnh_pct>=0.6?'positive':'negative')+'">'+(s.beat_bnh_pct*100).toFixed(0)+'%</td>';
-    h+='<td>'+s.total_trades+'</td></tr>';
+function renderCompare(){
+  var h='<div class="section-title">'+t('headToHead')+'</div>';
+  h+='<table><thead><tr><th style="text-align:left">'+t('period')+'</th><th>'+t('type')+'</th><th>'+t('signalMed')+'</th><th>'+t('bnhMed')+'</th><th>'+t('btcCol')+'</th><th>'+t('alpha')+'</th><th>'+t('beatBnh')+'</th><th>'+t('winRate')+'</th><th>'+t('trades')+'</th></tr></thead><tbody>';
+  var pkeys=['h1_2025','h2_2025','q1_2026','full_2025'];
+  for(var i=0;i<pkeys.length;i++){
+    var pk=pkeys[i];
+    var os=DATA.offensive[activeOff][pk]?DATA.offensive[activeOff][pk].summary:null;
+    var ds=DATA.defensive[activeDef][pk]?DATA.defensive[activeDef][pk].summary:null;
+    if(os){var oa=os.signal_median-os.bnh_median;
+      h+='<tr><td style="font-weight:600">'+pLabel(pk)+'</td><td><span class="strat-badge badge-off">'+t('offLabel')+'</span></td>';
+      h+='<td class="'+pctC(os.signal_median)+'">'+pct(os.signal_median)+'</td><td class="'+pctC(os.bnh_median)+'">'+pct(os.bnh_median)+'</td><td class="'+pctC(os.btc_ret)+'">'+pct(os.btc_ret)+'</td>';
+      h+='<td class="'+pctC(oa)+'"><strong>'+pct(oa)+'</strong></td><td class="'+(os.beat_bnh_pct>=0.6?'positive':'negative')+'">'+(os.beat_bnh_pct*100).toFixed(0)+'%</td>';
+      h+='<td>'+(os.win_rate*100).toFixed(1)+'%</td><td>'+os.total_trades+'</td></tr>';}
+    if(ds){var da=ds.signal_median-ds.bnh_median;
+      h+='<tr><td></td><td><span class="strat-badge badge-def">'+t('defLabel')+'</span></td>';
+      h+='<td class="'+pctC(ds.signal_median)+'">'+pct(ds.signal_median)+'</td><td class="'+pctC(ds.bnh_median)+'">'+pct(ds.bnh_median)+'</td><td class="'+pctC(ds.btc_ret)+'">'+pct(ds.btc_ret)+'</td>';
+      h+='<td class="'+pctC(da)+'"><strong>'+pct(da)+'</strong></td><td class="'+(ds.beat_bnh_pct>=0.6?'positive':'negative')+'">'+(ds.beat_bnh_pct*100).toFixed(0)+'%</td>';
+      h+='<td>'+(ds.win_rate*100).toFixed(1)+'%</td><td>'+ds.total_trades+'</td></tr>';}
   }
   h+='</tbody></table>';
+  var os=DATA.offensive[activeOff].full_2025.summary,ds=DATA.defensive[activeDef].full_2025.summary;
+  h+='<div class="section-title">'+t('stratProfile')+' \u2014 '+t('full2025')+'</div><div class="compare">';
+  h+='<div class="compare-card"><h4><span class="strat-badge badge-off">'+t('offLabel')+'</span></h4>';
+  h+='<div class="stat"><span class="stat-label">'+t('trades')+'</span><span class="stat-value">'+os.total_trades+'</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('winRate')+'</span><span class="stat-value">'+(os.win_rate*100).toFixed(1)+'%</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('signalMed')+'</span><span class="stat-value '+pctC(os.signal_median)+'">'+pct(os.signal_median)+'</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('beatBnh')+'</span><span class="stat-value '+(os.beat_bnh_pct>=0.7?'positive':'negative')+'">'+(os.beat_bnh_pct*100).toFixed(0)+'%</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('logic')+'</span><span class="stat-value" style="font-size:0.7rem;color:#888">'+t('offLogic')+'</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('stopTrail')+'</span><span class="stat-value" style="font-size:0.7rem;color:#888">'+t('offStop')+'</span></div></div>';
+  h+='<div class="compare-card"><h4><span class="strat-badge badge-def">'+t('defLabel')+'</span></h4>';
+  h+='<div class="stat"><span class="stat-label">'+t('trades')+'</span><span class="stat-value">'+ds.total_trades+'</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('winRate')+'</span><span class="stat-value">'+(ds.win_rate*100).toFixed(1)+'%</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('signalMed')+'</span><span class="stat-value '+pctC(ds.signal_median)+'">'+pct(ds.signal_median)+'</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('beatBnh')+'</span><span class="stat-value '+(ds.beat_bnh_pct>=0.7?'positive':'negative')+'">'+(ds.beat_bnh_pct*100).toFixed(0)+'%</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('logic')+'</span><span class="stat-value" style="font-size:0.7rem;color:#888">'+t('defLogic')+'</span></div>';
+  h+='<div class="stat"><span class="stat-label">'+t('stopTrail')+'</span><span class="stat-value" style="font-size:0.7rem;color:#888">'+t('defStop')+'</span></div></div></div>';
+  var obs=DATA.offensive[activeOff].h2_2025.summary,dbs=DATA.defensive[activeDef].h2_2025.summary;
+  h+='<div class="verdict"><h3>'+t('assessment')+'</h3>';
+  h+=t('verdictOff')(os.total_trades,ds.total_trades,(os.beat_bnh_pct*100).toFixed(0),(ds.beat_bnh_pct*100).toFixed(0));
+  h+=t('verdictDef')((obs.beat_bnh_pct*100).toFixed(0),(dbs.beat_bnh_pct*100).toFixed(0));
+  h+=t('verdictBoth')+'</div>';
+  return h;
+}
 
+function renderSingle(st){
+  var cfgs=st==='offensive'?DATA.offensive:DATA.defensive;
+  var active=st==='offensive'?activeOff:activeDef;
+  var lkeys=st==='offensive'?OFF_LABELS_KEY:DEF_LABELS_KEY;
+  var badge=st==='offensive'?'<span class="strat-badge badge-off">'+t('offLabel')+'</span>':'<span class="strat-badge badge-def">'+t('defLabel')+'</span>';
+  var cfg=cfgs[active];var c=cfg[activePeriod]?cfg[activePeriod].summary:cfg.full_2025.summary;
+  var alpha=c.signal_median-c.bnh_median;
+  var h='<div class="section-title">'+badge+' '+t(lkeys[active])+' \u00b7 '+t('overview')+'</div>';
+  h+='<div class="metrics">';
+  h+='<div class="metric"><div class="metric-label">'+t('coins')+'</div><div class="metric-value">'+c.num_coins+'</div><div class="metric-sub">'+t('coinsDesc')+'</div></div>';
+  h+='<div class="metric"><div class="metric-label">'+t('trades')+'</div><div class="metric-value">'+c.total_trades+'</div><div class="metric-sub">'+t('total')+'</div></div>';
+  h+='<div class="metric"><div class="metric-label">'+t('winRate')+'</div><div class="metric-value '+(c.win_rate>=0.4?'positive':'neutral')+'">'+(c.win_rate*100).toFixed(1)+'%</div><div class="metric-sub">'+t('perTrade')+'</div></div>';
+  h+='<div class="metric"><div class="metric-label">'+t('alphaVsBnh')+'</div><div class="metric-value '+pctC(alpha)+'">'+pct(alpha)+'</div><div class="metric-sub">'+t('median')+'</div></div>';
+  h+='<div class="metric"><div class="metric-label">'+t('beatBnh')+'</div><div class="metric-value '+(c.beat_bnh_pct>=0.6?'positive':'negative')+'">'+(c.beat_bnh_pct*100).toFixed(0)+'%</div><div class="metric-sub">'+t('ofCoins')+'</div></div></div>';
+  h+='<div class="section-title">'+t('periodComparison')+'</div>';
+  h+='<table><thead><tr><th style="text-align:left">'+t('period')+'</th><th>'+t('btcCol')+'</th><th>'+t('signalMed')+'</th><th>'+t('bnhMed')+'</th><th>'+t('alpha')+'</th><th>'+t('winRate')+'</th><th>'+t('beatBnh')+'</th><th>'+t('trades')+'</th></tr></thead><tbody>';
+  var pkeys=['h1_2025','h2_2025','q1_2026','full_2025'];
+  for(var i=0;i<pkeys.length;i++){var pk=pkeys[i],s=cfg[pk]?cfg[pk].summary:null;if(!s)continue;var a=s.signal_median-s.bnh_median;
+    h+='<tr style="cursor:pointer" onclick="activePeriod=\''+pk+'\';render()"><td style="font-weight:600">'+pLabel(pk)+'</td><td class="'+pctC(s.btc_ret)+'">'+pct(s.btc_ret)+'</td><td class="'+pctC(s.signal_median)+'">'+pct(s.signal_median)+'</td><td class="'+pctC(s.bnh_median)+'">'+pct(s.bnh_median)+'</td><td class="'+pctC(a)+'"><strong>'+pct(a)+'</strong></td><td>'+(s.win_rate*100).toFixed(1)+'%</td><td class="'+(s.beat_bnh_pct>=0.6?'positive':'negative')+'">'+(s.beat_bnh_pct*100).toFixed(0)+'%</td><td>'+s.total_trades+'</td></tr>';}
+  h+='</tbody></table>';
   var pd=cfg[activePeriod];
-  if(pd){
-    h+='<div class="section-title">Rankings \u00b7 '+PERIOD_LABELS[activePeriod]+'</div>';
-    h+='<div class="tabs">';
-    h+='<button class="tab '+(coinView==='top'?'active':'')+'" onclick="coinView=\'top\';renderDashboard()">Top 10</button>';
-    h+='<button class="tab '+(coinView==='bottom'?'active':'')+'" onclick="coinView=\'bottom\';renderDashboard()">Bottom 10</button>';
-    h+='</div>';
-    var coins=coinView==='top'?pd.top10:pd.bottom10;
-    var mx=0;for(var ci=0;ci<coins.length;ci++){var av=Math.abs(coins[ci][1].total_ret);if(av>mx)mx=av}
-    h+='<table class="coin-table"><thead><tr><th style="text-align:left">#</th><th>Symbol</th><th>Signal</th><th></th><th>B&H</th><th>BTC</th><th>Trades</th><th>WR</th></tr></thead><tbody>';
-    for(var ci=0;ci<coins.length;ci++){
-      var sym=coins[ci][0],v=coins[ci][1];
-      var bw=Math.min(Math.abs(v.total_ret)/(mx||1)*100,100);
-      h+='<tr><td>'+(ci+1)+'</td><td>'+sym.replace('USDT','')+'</td>';
-      h+='<td class="'+pctC(v.total_ret)+'"><strong>'+pct(v.total_ret)+'</strong></td>';
-      h+='<td><div class="bar-wrap"><div class="bar '+(v.total_ret>=0?'pos':'neg')+'" style="width:'+bw+'px"></div></div></td>';
-      h+='<td class="'+pctC(v.bnh)+'">'+pct(v.bnh)+'</td>';
-      h+='<td class="'+pctC(v.btc_ret)+'">'+pct(v.btc_ret)+'</td>';
-      h+='<td>'+v.n+'</td><td>'+(v.win_rate*100).toFixed(0)+'%</td></tr>';
-    }
-    h+='</tbody></table>';
-  }
+  if(pd){h+='<div class="section-title">'+t('rankings')+' \u00b7 '+pLabel(activePeriod)+'</div>';
+    h+='<div class="tabs"><button class="tab '+(coinView==='top'?'active':'')+'" onclick="coinView=\'top\';render()">'+t('top10')+'</button><button class="tab '+(coinView==='bottom'?'active':'')+'" onclick="coinView=\'bottom\';render()">'+t('bottom10')+'</button></div>';
+    var coins=coinView==='top'?pd.top10:pd.bottom10;var mx=0;for(var j=0;j<coins.length;j++){var av=Math.abs(coins[j][1].total_ret);if(av>mx)mx=av}
+    h+='<table class="coin-table"><thead><tr><th style="text-align:left">#</th><th>'+t('symbol')+'</th><th>'+t('signal')+'</th><th></th><th>'+t('bnh')+'</th><th>'+t('btc')+'</th><th>'+t('trades')+'</th><th>'+t('wr')+'</th></tr></thead><tbody>';
+    for(var j=0;j<coins.length;j++){var sym=coins[j][0],v=coins[j][1];var bw=Math.min(Math.abs(v.total_ret)/(mx||1)*100,100);
+      h+='<tr><td>'+(j+1)+'</td><td>'+sym.replace('USDT','')+'</td><td class="'+pctC(v.total_ret)+'"><strong>'+pct(v.total_ret)+'</strong></td><td><div class="bar-wrap"><div class="bar '+(v.total_ret>=0?'pos':'neg')+'" style="width:'+bw+'px"></div></div></td><td class="'+pctC(v.bnh)+'">'+pct(v.bnh)+'</td><td class="'+pctC(v.btc_ret)+'">'+pct(v.btc_ret)+'</td><td>'+v.n+'</td><td>'+(v.win_rate*100).toFixed(0)+'%</td></tr>';}
+    h+='</tbody></table>';}
+  return h;
+}
 
-  var fs=cfg.full_2025?cfg.full_2025.summary:null;
-  var bs=cfg.bear_h2_2025?cfg.bear_h2_2025.summary:null;
-  var rs=cfg.recent_2026?cfg.recent_2026.summary:null;
-  if(fs&&bs&&rs){
-    var bearAlpha=((bs.signal_median-bs.bnh_median)*100).toFixed(0);
-    h+='<div class="verdict">';
-    h+='<h3>Assessment</h3>';
-    h+='<p><strong>\uBC29\uC5B4\uB825 \uD655\uC778.</strong> 2025 H2 \uD558\uB77D\uC7A5(BTC '+pct(bs.btc_ret)+')\uC5D0\uC11C B&H \uB300\uBE44 <strong>'+bearAlpha+'%p</strong> \uC190\uC2E4 \uBC29\uC5B4. '+(bs.beat_bnh_pct*100).toFixed(0)+'% \uCF54\uC778\uC5D0\uC11C \uC544\uC6C3\uD37C\uD3FC.</p>';
-    h+='<p><strong>\uACF5\uACA9\uB825 \uBD80\uC871.</strong> 2026 Q1(BTC '+pct(rs.btc_ret)+')\uC5D0\uC11C B&H \uB300\uBE44 \uC544\uC6C3\uD37C\uD3FC '+(rs.beat_bnh_pct*100).toFixed(0)+'%\uB85C \uD558\uB77D. \uC0C1\uC2B9\uC7A5\uC5D0\uC11C \uC9C4\uC785\uC774 \uB290\uB9BC.</p>';
-    h+='<p>\uD604\uC7AC \uC2DC\uADF8\uB110\uC740 <strong>\uC190\uC2E4 \uD68C\uD53C \uD544\uD130</strong>\uB85C \uD65C\uC6A9\uD558\uB294 \uAC83\uC774 \uC801\uD569. \uC54C\uD30C \uC0DD\uC131 \uB3C4\uAD6C\uAC00 \uC544\uB2D8.</p>';
-    h+='</div>';
-  }
-  document.getElementById('dashboard').innerHTML=h;
+function renderHow(){
+  var h='<div class="how-section">';
+  h+='<h2>'+t('howTitle')+'</h2><p>'+t('howIntro')+'</p>';
+  h+='<h3>'+t('howUniverseTitle')+'</h3><p>'+t('howUniverse')+'</p>';
+  h+='<h3>'+t('howTwoTitle')+'</h3>';
+  h+='<h3>'+t('howMomentumTitle')+'</h3><p>'+t('howMomentumDesc')+'</p>';
+  h+='<div class="step off"><div class="step-num">1</div><div class="step-title">'+t('howMomStep1Title')+'</div><div class="step-desc">'+t('howMomStep1Desc')+'</div></div>';
+  h+='<div class="step off"><div class="step-num">2</div><div class="step-title">'+t('howMomStep2Title')+'</div><div class="step-desc">'+t('howMomStep2Desc')+'</div></div>';
+  h+='<div class="step off"><div class="step-num">3</div><div class="step-title">'+t('howMomStep3Title')+'</div><div class="step-desc">'+t('howMomStep3Desc')+'</div></div>';
+  h+='<div class="step off"><div class="step-num">4</div><div class="step-title">'+t('howMomStep4Title')+'</div><div class="step-desc">'+t('howMomStep4Desc')+'</div></div>';
+  h+='<div class="example">'+t('howMomEntry')+'</div>';
+  h+='<h3>'+t('howProtectiveTitle')+'</h3><p>'+t('howProtectiveDesc')+'</p>';
+  h+='<div class="step def"><div class="step-num">1</div><div class="step-title">'+t('howDefStep1Title')+'</div><div class="step-desc">'+t('howDefStep1Desc')+'</div></div>';
+  h+='<div class="step def"><div class="step-num">2</div><div class="step-title">'+t('howDefStep2Title')+'</div><div class="step-desc">'+t('howDefStep2Desc')+'</div></div>';
+  h+='<div class="step def"><div class="step-num">3</div><div class="step-title">'+t('howDefStep3Title')+'</div><div class="step-desc">'+t('howDefStep3Desc')+'</div></div>';
+  h+='<div class="example">'+t('howDefEntry')+'</div>';
+  h+='<h3>'+t('howReadingTitle')+'</h3><p>'+t('howReadingDesc')+'</p>';
+  h+='<div class="example">'+t('howReading1')+'</div>';
+  h+='<div class="example">'+t('howReading2')+'</div>';
+  h+='<div class="example">'+t('howReading3')+'</div>';
+  h+='<div class="example">'+t('howReading4')+'</div>';
+  h+='<h3>'+t('howCaveatsTitle')+'</h3>';
+  h+='<div class="example">'+t('howCaveat1')+'</div>';
+  h+='<div class="example">'+t('howCaveat2')+'</div>';
+  h+='<div class="example">'+t('howCaveat3')+'</div>';
+  h+='<div class="example">'+t('howCaveat4')+'</div>';
+  h+='</div>';
+  return h;
+}
+
+function render(){
+  renderLang();renderModeBar();renderConfigBar();
+  if(mode==='how'){document.getElementById('dashboard').innerHTML=renderHow();return}
+  if(!DATA){document.getElementById('dashboard').innerHTML='<div class="loading">Loading...</div>';return}
+  if(mode==='compare') document.getElementById('dashboard').innerHTML=renderCompare();
+  else document.getElementById('dashboard').innerHTML=renderSingle(mode);
 }
 
 async function init(){
   try{
-    var r=await fetch('/results.json');var rd=await r.json();
-    var u=await fetch('/universe.json');var ud=await u.json();
-    DATA=rd;UNIVERSE=ud;
+    var r=await fetch('/dual_results.json');DATA=await r.json();
     document.getElementById('footer-time').textContent='Updated '+new Date().toISOString().split('T')[0];
-    renderConfigBar();renderDashboard();
+    render();
   }catch(e){document.getElementById('dashboard').innerHTML='<div class="loading" style="color:#dc2626">Error: '+e.message+'</div>'}
 }
 init();
