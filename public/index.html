@@ -176,32 +176,32 @@ var T = {
     howTitle: 'How This Dashboard Works',
     howIntro: 'This dashboard tests two simple strategies for picking which altcoins to buy and when. It looks at historical data to see how well each strategy would have performed.',
     howUniverseTitle: 'Which Coins Are Included?',
-    howUniverse: 'We start with all altcoins that have futures contracts on Binance (the world\'s largest crypto exchange). Then we filter out coins with less than $5 million in open bets \u2014 if too few people are trading a coin, the data becomes unreliable. This leaves us with roughly 100 coins to test.',
+    howUniverse: 'We start with all altcoins that have futures contracts on Binance (the world's largest crypto exchange). Then we filter out coins with less than $5 million in open bets \u2014 if too few people are trading a coin, the data becomes unreliable. This leaves us with roughly 100 coins to test.',
     howTwoTitle: 'Two Strategies',
     howMomentumTitle: 'Momentum Strategy ("Offensive")',
     howMomentumDesc: 'This strategy tries to jump on coins that are starting to surge. Think of it like surfing \u2014 you want to catch the wave as it forms.',
     howMomStep1Title: 'Is the price breaking out?',
-    howMomStep1Desc: 'The strategy checks if a coin\'s price just hit its highest point in the last 20 days. If yes, something may be driving it up.',
+    howMomStep1Desc: 'The strategy checks if a coin's price just hit its highest point in the last 20 days. If yes, something may be driving it up.',
     howMomStep2Title: 'Is it beating Bitcoin?',
-    howMomStep2Desc: 'It\'s not enough for a coin to go up \u2014 everything goes up when Bitcoin goes up. The strategy checks if this coin is gaining faster than Bitcoin, and if that outperformance is accelerating.',
+    howMomStep2Desc: 'It's not enough for a coin to go up \u2014 everything goes up when Bitcoin goes up. The strategy checks if this coin is gaining faster than Bitcoin, and if that outperformance is accelerating.',
     howMomStep3Title: 'Is volume surging?',
-    howMomStep3Desc: 'When a coin\'s trading volume suddenly spikes above its 20-day average while the price is rising, it suggests real buying pressure, not just random movement.',
+    howMomStep3Desc: 'When a coin's trading volume suddenly spikes above its 20-day average while the price is rising, it suggests real buying pressure, not just random movement.',
     howMomStep4Title: 'Are leveraged traders confirming?',
     howMomStep4Desc: 'On Binance Futures, traders who bet on price increases ("longs") periodically pay a fee to traders betting on decreases ("shorts"), and vice versa. When longs are paying, it means many traders are betting on further upside. This confirms the momentum.',
     howMomEntry: 'The strategy buys when at least 2 of these 4 conditions are true. It sells when the price drops 20% from entry, or drops 18% from its highest point since entry, or when all signals turn off.',
     howProtectiveTitle: 'Protective Strategy ("Defensive")',
     howProtectiveDesc: 'This strategy is more cautious. Instead of chasing surges, it looks for coins that are quietly holding up well. Think of it like picking the strongest player on the team \u2014 not the flashiest, but the most consistent.',
     howDefStep1Title: 'Is it trending better than Bitcoin?',
-    howDefStep1Desc: 'The strategy looks at the coin\'s price relative to Bitcoin over the medium term (14 days vs 50 days). If the shorter trend is above the longer trend, the coin is gaining ground on Bitcoin.',
+    howDefStep1Desc: 'The strategy looks at the coin's price relative to Bitcoin over the medium term (14 days vs 50 days). If the shorter trend is above the longer trend, the coin is gaining ground on Bitcoin.',
     howDefStep2Title: 'Is buying stronger than selling?',
-    howDefStep2Desc: 'Over the last 14 days, the strategy compares total trading volume on days the price went up versus days it went down. If there\'s 15% more volume on up days, it suggests quiet accumulation.',
+    howDefStep2Desc: 'Over the last 14 days, the strategy compares total trading volume on days the price went up versus days it went down. If there's 15% more volume on up days, it suggests quiet accumulation.',
     howDefStep3Title: 'Are short sellers paying?',
-    howDefStep3Desc: 'When the funding rate is negative, traders betting against the coin ("shorts") are paying a fee to hold their positions. This means the market is positioned bearishly, but the price hasn\'t dropped \u2014 a sign the selling pressure may be exhausted.',
+    howDefStep3Desc: 'When the funding rate is negative, traders betting against the coin ("shorts") are paying a fee to hold their positions. This means the market is positioned bearishly, but the price hasn't dropped \u2014 a sign the selling pressure may be exhausted.',
     howDefEntry: 'The strategy buys when at least 2 of these 3 conditions are true. It sells when the price drops 10% from entry, or drops 8% from its highest point since entry, or when all signals turn off.',
     howReadingTitle: 'Reading the Results',
     howReadingDesc: 'For each strategy, we simulate trading every coin in our list over different time periods and compare the results to two alternatives:',
     howReading1: '<strong>"If You Just Held"</strong> \u2014 What would have happened if you bought the coin at the start of the period and never sold? This is the simplest possible strategy.',
-    howReading2: '<strong>"Bitcoin"</strong> \u2014 How did Bitcoin perform in the same period? If a strategy can\'t beat just holding Bitcoin, it\'s not adding value.',
+    howReading2: '<strong>"Bitcoin"</strong> \u2014 How did Bitcoin perform in the same period? If a strategy can't beat just holding Bitcoin, it's not adding value.',
     howReading3: '<strong>"Beat Holding"</strong> \u2014 In what percentage of coins did the signal outperform simply holding? Above 50% means the signal is adding value on average.',
     howReading4: '<strong>"Win %"</strong> \u2014 What percentage of individual trades made money? A 40% win rate can still be profitable if the winning trades are much larger than the losing ones.',
     howCaveatsTitle: 'Important Limitations',
@@ -293,19 +293,15 @@ function pct(v,d){if(d===undefined)d=1;if(v==null)return'\u2014';var s=(v*100).t
 function pctC(v){return v>0.001?'positive':v<-0.001?'negative':'neutral'}
 
 function renderLang(){
-  document.getElementById('lang-toggle').innerHTML=
-    '<button class="lang-btn '+(lang==='en'?'active':'')+'" onclick="lang=\'en\';render()">EN</button>'+
-    '<button class="lang-btn '+(lang==='kr'?'active':'')+'" onclick="lang=\'kr\';render()">KR</button>';
+  var el=document.getElementById('lang-toggle');
+  el.innerHTML='<button class="lang-btn '+(lang==='en'?'active':'')+'" data-lang="en">EN</button>'+'<button class="lang-btn '+(lang==='kr'?'active':'')+'" data-lang="kr">KR</button>';
   document.getElementById('subtitle').textContent=t('subtitle');
   document.getElementById('footer-src').textContent=t('footerSrc');
 }
 
 function renderModeBar(){
-  document.getElementById('mode-bar').innerHTML=
-    '<button class="mode-btn '+(mode==='compare'?'active-off':'')+'" onclick="mode=\'compare\';render()">'+t('compare')+'</button>'+
-    '<button class="mode-btn '+(mode==='offensive'?'active-off':'')+'" onclick="mode=\'offensive\';render()">'+t('offensive')+'</button>'+
-    '<button class="mode-btn '+(mode==='defensive'?'active-def':'')+'" onclick="mode=\'defensive\';render()">'+t('defensive')+'</button>'+
-    '<button class="mode-btn '+(mode==='how'?'active-how':'')+'" onclick="mode=\'how\';render()">'+t('howItWorks')+'</button>';
+  var el=document.getElementById('mode-bar');
+  el.innerHTML='<button class="mode-btn '+(mode==='compare'?'active-off':'')+'" data-mode="compare">'+t('compare')+'</button>'+'<button class="mode-btn '+(mode==='offensive'?'active-off':'')+'" data-mode="offensive">'+t('offensive')+'</button>'+'<button class="mode-btn '+(mode==='defensive'?'active-def':'')+'" data-mode="defensive">'+t('defensive')+'</button>'+'<button class="mode-btn '+(mode==='how'?'active-how':'')+'" data-mode="how">'+t('howItWorks')+'</button>';
 }
 
 function renderConfigBar(){
@@ -315,7 +311,7 @@ function renderConfigBar(){
   var active=mode==='offensive'?activeOff:activeDef;
   var h='';
   for(var k in keys){
-    h+='<button class="config-btn '+(k===active?'active':'')+'" onclick="'+(mode==='offensive'?'activeOff':'activeDef')+'=\''+k+'\';render()">'+t(keys[k])+'</button>';
+    h+='<button class="config-btn '+(k===active?'active':'')+'" data-cfg="'+k+'">'+t(keys[k])+'</button>';
   }
   el.innerHTML=h;
 }
@@ -382,11 +378,11 @@ function renderSingle(st){
   h+='<table><thead><tr><th style="text-align:left">'+t('period')+'</th><th>'+t('btcCol')+'</th><th>'+t('signalMed')+'</th><th>'+t('bnhMed')+'</th><th>'+t('alpha')+'</th><th>'+t('winRate')+'</th><th>'+t('beatBnh')+'</th><th>'+t('trades')+'</th></tr></thead><tbody>';
   var pkeys=['h1_2025','h2_2025','q1_2026','full_2025'];
   for(var i=0;i<pkeys.length;i++){var pk=pkeys[i],s=cfg[pk]?cfg[pk].summary:null;if(!s)continue;var a=s.signal_median-s.bnh_median;
-    h+='<tr style="cursor:pointer" onclick="activePeriod=\''+pk+'\';render()"><td style="font-weight:600">'+pLabel(pk)+'</td><td class="'+pctC(s.btc_ret)+'">'+pct(s.btc_ret)+'</td><td class="'+pctC(s.signal_median)+'">'+pct(s.signal_median)+'</td><td class="'+pctC(s.bnh_median)+'">'+pct(s.bnh_median)+'</td><td class="'+pctC(a)+'"><strong>'+pct(a)+'</strong></td><td>'+(s.win_rate*100).toFixed(1)+'%</td><td class="'+(s.beat_bnh_pct>=0.6?'positive':'negative')+'">'+(s.beat_bnh_pct*100).toFixed(0)+'%</td><td>'+s.total_trades+'</td></tr>';}
+    h+='<tr style="cursor:pointer" data-period="'+pk+'"><td style="font-weight:600">'+pLabel(pk)+'</td><td class="'+pctC(s.btc_ret)+'">'+pct(s.btc_ret)+'</td><td class="'+pctC(s.signal_median)+'">'+pct(s.signal_median)+'</td><td class="'+pctC(s.bnh_median)+'">'+pct(s.bnh_median)+'</td><td class="'+pctC(a)+'"><strong>'+pct(a)+'</strong></td><td>'+(s.win_rate*100).toFixed(1)+'%</td><td class="'+(s.beat_bnh_pct>=0.6?'positive':'negative')+'">'+(s.beat_bnh_pct*100).toFixed(0)+'%</td><td>'+s.total_trades+'</td></tr>';}
   h+='</tbody></table>';
   var pd=cfg[activePeriod];
   if(pd){h+='<div class="section-title">'+t('rankings')+' \u00b7 '+pLabel(activePeriod)+'</div>';
-    h+='<div class="tabs"><button class="tab '+(coinView==='top'?'active':'')+'" onclick="coinView=\'top\';render()">'+t('top10')+'</button><button class="tab '+(coinView==='bottom'?'active':'')+'" onclick="coinView=\'bottom\';render()">'+t('bottom10')+'</button></div>';
+    h+='<div class="tabs"><button class="tab '+(coinView==='top'?'active':'')+'" data-coinview="top">'+t('top10')+'</button><button class="tab '+(coinView==='bottom'?'active':'')+'" data-coinview="bottom">'+t('bottom10')+'</button></div>';
     var coins=coinView==='top'?pd.top10:pd.bottom10;var mx=0;for(var j=0;j<coins.length;j++){var av=Math.abs(coins[j][1].total_ret);if(av>mx)mx=av}
     h+='<table class="coin-table"><thead><tr><th style="text-align:left">#</th><th>'+t('symbol')+'</th><th>'+t('signal')+'</th><th></th><th>'+t('bnh')+'</th><th>'+t('btc')+'</th><th>'+t('trades')+'</th><th>'+t('wr')+'</th></tr></thead><tbody>';
     for(var j=0;j<coins.length;j++){var sym=coins[j][0],v=coins[j][1];var bw=Math.min(Math.abs(v.total_ret)/(mx||1)*100,100);
@@ -432,6 +428,21 @@ function render(){
   if(mode==='compare') document.getElementById('dashboard').innerHTML=renderCompare();
   else document.getElementById('dashboard').innerHTML=renderSingle(mode);
 }
+
+// Single global click handler for all dynamic buttons
+document.addEventListener('click',function(e){
+  var b;
+  b=e.target.closest('[data-lang]');
+  if(b){lang=b.getAttribute('data-lang');render();return}
+  b=e.target.closest('[data-mode]');
+  if(b){mode=b.getAttribute('data-mode');render();return}
+  b=e.target.closest('[data-cfg]');
+  if(b){if(mode==='offensive')activeOff=b.getAttribute('data-cfg');else activeDef=b.getAttribute('data-cfg');render();return}
+  b=e.target.closest('[data-period]');
+  if(b){activePeriod=b.getAttribute('data-period');render();return}
+  b=e.target.closest('[data-coinview]');
+  if(b){coinView=b.getAttribute('data-coinview');render();return}
+});
 
 async function init(){
   try{
