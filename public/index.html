@@ -517,10 +517,11 @@ function renderLive(){
   if(offBuys.length===0){
     h+='<p style="color:#999;font-size:0.82rem;padding:8px 0">No signals currently active.</p>';
   } else {
-    h+='<table><thead><tr><th style="text-align:left">'+t('symbol')+'</th><th>'+t('liveScore')+'</th><th>'+t('liveBreakout')+'</th><th>'+t('liveRsAccel')+'</th><th>'+t('liveVolSurge')+'</th><th>'+t('liveFundConf')+'</th><th>'+t('live7d')+'</th><th>'+t('liveRsBtc')+'</th><th>'+t('liveFunding')+'</th></tr></thead><tbody>';
+    h+='<table><thead><tr><th style="text-align:left">'+t('symbol')+'</th><th>FDV</th><th>'+t('liveScore')+'</th><th>'+t('liveBreakout')+'</th><th>'+t('liveRsAccel')+'</th><th>'+t('liveVolSurge')+'</th><th>'+t('liveFundConf')+'</th><th>'+t('live7d')+'</th><th>'+t('liveRsBtc')+'</th><th>'+t('liveFunding')+'</th></tr></thead><tbody>';
     for(var i=0;i<offBuys.length;i++){
       var s=offBuys[i];
       h+='<tr><td style="text-align:left;font-weight:700">'+s.symbol.replace('USDT','')+'</td>';
+      h+='<td style="color:#888;font-size:0.78rem">'+fmtFDV(s.fdv)+'</td>';
       h+='<td><strong>'+s.off_total+'/4</strong></td>';
       h+='<td><span class="dot '+(s.off_breakout?'on':'off')+'"></span></td>';
       h+='<td><span class="dot '+(s.off_rs_accel?'on':'off')+'"></span></td>';
@@ -539,10 +540,11 @@ function renderLive(){
   if(defBuys.length===0){
     h+='<p style="color:#999;font-size:0.82rem;padding:8px 0">No signals currently active.</p>';
   } else {
-    h+='<table><thead><tr><th style="text-align:left">'+t('symbol')+'</th><th>'+t('liveScore')+'</th><th>'+t('liveRsTrend')+'</th><th>'+t('liveVolStruct')+'</th><th>'+t('liveFundNeg')+'</th><th>'+t('live7d')+'</th><th>'+t('liveRsBtc')+'</th><th>'+t('liveFunding')+'</th></tr></thead><tbody>';
+    h+='<table><thead><tr><th style="text-align:left">'+t('symbol')+'</th><th>FDV</th><th>'+t('liveScore')+'</th><th>'+t('liveRsTrend')+'</th><th>'+t('liveVolStruct')+'</th><th>'+t('liveFundNeg')+'</th><th>'+t('live7d')+'</th><th>'+t('liveRsBtc')+'</th><th>'+t('liveFunding')+'</th></tr></thead><tbody>';
     for(var i=0;i<defBuys.length;i++){
       var s=defBuys[i];
       h+='<tr><td style="text-align:left;font-weight:700">'+s.symbol.replace('USDT','')+'</td>';
+      h+='<td style="color:#888;font-size:0.78rem">'+fmtFDV(s.fdv)+'</td>';
       h+='<td><strong>'+s.def_total+'/3</strong></td>';
       h+='<td><span class="dot '+(s.def_rs?'on':'off')+'"></span></td>';
       h+='<td><span class="dot '+(s.def_vol?'on':'off')+'"></span></td>';
