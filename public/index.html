@@ -404,6 +404,7 @@ function pLabel(pk){return t(PERIODS[pk])}
 function pct(v,d){if(d===undefined)d=1;if(v==null)return'\u2014';var s=(v*100).toFixed(d);return(s>0?'+':'')+s+'%'}
 function pctC(v){return v>0.001?'positive':v<-0.001?'negative':'neutral'}
 function fmtFDV(v){if(!v)return'\u2014';if(v>=1e9)return'$'+(v/1e9).toFixed(1)+'B';if(v>=1e6)return'$'+(v/1e6).toFixed(0)+'M';return'$'+(v/1e3).toFixed(0)+'K'}
+function getFDV(sym){if(!LIVE||!LIVE.coins)return null;var c=LIVE.coins.find(function(x){return x.symbol===sym});return c?c.fdv:null}
 
 function renderLang(){
   var el=document.getElementById('lang-toggle');
@@ -497,9 +498,9 @@ function renderSingle(st){
   if(pd){h+='<div class="section-title">'+t('rankings')+' \u00b7 '+pLabel(activePeriod)+'</div>';
     h+='<div class="tabs"><button class="tab '+(coinView==='top'?'active':'')+'" data-coinview="top">'+t('top10')+'</button><button class="tab '+(coinView==='bottom'?'active':'')+'" data-coinview="bottom">'+t('bottom10')+'</button></div>';
     var coins=coinView==='top'?pd.top10:pd.bottom10;var mx=0;for(var j=0;j<coins.length;j++){var av=Math.abs(coins[j][1].total_ret);if(av>mx)mx=av}
-    h+='<table class="coin-table"><thead><tr><th style="text-align:left">#</th><th>'+t('symbol')+'</th><th>'+t('signal')+'</th><th></th><th>'+t('bnh')+'</th><th>'+t('btc')+'</th><th>'+t('trades')+'</th><th>'+t('wr')+'</th></tr></thead><tbody>';
+    h+='<table class="coin-table"><thead><tr><th style="text-align:left">#</th><th>'+t('symbol')+'</th><th>FDV</th><th>'+t('signal')+'</th><th></th><th>'+t('bnh')+'</th><th>'+t('btc')+'</th><th>'+t('trades')+'</th><th>'+t('wr')+'</th></tr></thead><tbody>';
     for(var j=0;j<coins.length;j++){var sym=coins[j][0],v=coins[j][1];var bw=Math.min(Math.abs(v.total_ret)/(mx||1)*100,100);
-      h+='<tr><td>'+(j+1)+'</td><td>'+sym.replace('USDT','')+'</td><td class="'+pctC(v.total_ret)+'"><strong>'+pct(v.total_ret)+'</strong></td><td><div class="bar-wrap"><div class="bar '+(v.total_ret>=0?'pos':'neg')+'" style="width:'+bw+'px"></div></div></td><td class="'+pctC(v.bnh)+'">'+pct(v.bnh)+'</td><td class="'+pctC(v.btc_ret)+'">'+pct(v.btc_ret)+'</td><td>'+v.n+'</td><td>'+(v.win_rate*100).toFixed(0)+'%</td></tr>';}
+      h+='<tr><td>'+(j+1)+'</td><td>'+sym.replace('USDT','')+'</td><td style="color:#888;font-size:0.78rem">'+fmtFDV(getFDV(sym))+'</td><td class="'+pctC(v.total_ret)+'"><strong>'+pct(v.total_ret)+'</strong></td><td><div class="bar-wrap"><div class="bar '+(v.total_ret>=0?'pos':'neg')+'" style="width:'+bw+'px"></div></div></td><td class="'+pctC(v.bnh)+'">'+pct(v.bnh)+'</td><td class="'+pctC(v.btc_ret)+'">'+pct(v.btc_ret)+'</td><td>'+v.n+'</td><td>'+(v.win_rate*100).toFixed(0)+'%</td></tr>';}
     h+='</tbody></table>';}
   return h;
 }
@@ -641,11 +642,12 @@ function renderShort(){
     h+='<div class="tabs"><button class="tab '+(coinView==='top'?'active':'')+'" data-coinview="top">'+t('top10')+'</button><button class="tab '+(coinView==='bottom'?'active':'')+'" data-coinview="bottom">'+t('bottom10')+'</button></div>';
     var coins=coinView==='top'?pd.top10:pd.bottom10;
     var mx=0;for(var j=0;j<coins.length;j++){var av=Math.abs(coins[j][1].total_ret);if(av>mx)mx=av}
-    h+='<table class="coin-table"><thead><tr><th style="text-align:left">#</th><th>'+t('symbol')+'</th><th>Short P&L</th><th></th><th>'+t('bnh')+'</th><th>'+t('trades')+'</th><th>'+t('wr')+'</th></tr></thead><tbody>';
+    h+='<table class="coin-table"><thead><tr><th style="text-align:left">#</th><th>'+t('symbol')+'</th><th>FDV</th><th>Short P&L</th><th></th><th>'+t('bnh')+'</th><th>'+t('trades')+'</th><th>'+t('wr')+'</th></tr></thead><tbody>';
     for(var j=0;j<coins.length;j++){
       var sym=coins[j][0],v=coins[j][1];
       var bw=Math.min(Math.abs(v.total_ret)/(mx||1)*100,100);
       h+='<tr><td>'+(j+1)+'</td><td>'+sym.replace('USDT','')+'</td>';
+      h+='<td style="color:#888;font-size:0.78rem">'+fmtFDV(getFDV(sym))+'</td>';
       h+='<td class="'+pctC(v.total_ret)+'"><strong>'+pct(v.total_ret)+'</strong></td>';
       h+='<td><div class="bar-wrap"><div class="bar '+(v.total_ret>=0?'pos':'neg')+'" style="width:'+bw+'px"></div></div></td>';
       h+='<td class="'+pctC(-v.bnh)+'">'+(v.bnh>0?'rose':'fell')+' '+pct(Math.abs(v.bnh))+'</td>';
